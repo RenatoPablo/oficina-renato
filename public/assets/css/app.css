@@ -1,0 +1,83 @@
+/* Geral */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    z-index: 9999;
+    background-color: #2c3e50;
+    color: white;
+    padding-top: 20px;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 6px;
+    transition: 0.2s ease-in-out;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.sidebar a:hover {
+    background-color: #1abc9c;
+}
+
+/* Botão hamburguer */
+.hamburger {
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10000;
+    position: relative;
+    padding: 8px;
+}
+
+.hamburger.white i {
+    color: white !important;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Cartões */
+.card-custom {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Layout responsivo */
+@media (max-width: 768px) {
+    .sidebar {
+        left: -250px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+}
