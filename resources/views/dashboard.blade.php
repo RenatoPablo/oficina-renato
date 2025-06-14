@@ -102,8 +102,8 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a href="/clientes/criar" class="btn btn-primary w-100 p-3 shadow-sm">
-                    <i class="bi bi-person-plus"></i> Novo Cliente
+                <a href="{{ route('clientes.index') }}" class="btn btn-primary w-100 p-3 shadow-sm">
+                    <i class="bi bi-person-plus"></i> Gerenciar Clientes
                 </a>
             </div>
             <div class="col-md-4">

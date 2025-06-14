@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FormHelper;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -36,21 +37,27 @@ class ClienteController extends Controller
         'cnpj_cpf.unique' => 'CNPJ ou CPF já existem em outro cadastro.'
     ];
 
-
-    public function index() 
+    public function index(Request $request)
     {
-        $clientes = Cliente::all();
+        $search = $request->input('search');
+
+        $clientes = Cliente::query();
+
+        if ($search) {
+            $clientes->where(function($query) use ($search) {
+                $query->where('nome', 'like', '%' . $search . '%')
+                    ->orWhere('cnpj_cpf', 'like', '%' . $search . '%');
+            });
+        }
+
+        $clientes = $clientes->orderBy('nome')->paginate(10)->withQueryString();
+
         return view('clientes.index', compact('clientes'));
     }
 
     public function create() 
     {
         return view('clientes.create');
-    }
-
-    public function validadeInput()
-    {
-
     }
 
     public function createSubmit(Request $request)
@@ -65,76 +72,39 @@ class ClienteController extends Controller
         $cliente->nome = $request->nome;
 
         //contato
-        if ($request->filled('contato'))
-        {
-            $cliente->contato = $request->contato;
-        }
-
-        // IE/RG
-        if ($request->filled('ie_rg'))
-        {
-            $cliente->ie_rg = $request->ie_rg;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'contato', $cliente);
+        //ie_rg
+        FormHelper::preencherCampoSeTiver($request, 'ie_rg', $cliente);
 
         // CNPJ / CPF
-        if ($request->filled('cnpj_cpf'))
-        {
-            $cliente->cnpj_cpf = $request->cnpj_cpf;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'cnpj_cpf', $cliente);
 
         // endereco
-        if ($request->filled('endereco'))
-        {
-            $cliente->endereco = $request->endereco;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'endereco', $cliente);
 
         //bairro
-        if ($request->filled('bairro'))
-        {
-            $cliente->bairro = $request->bairro;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'bairro', $cliente);
 
         // municipio
-        if ($request->filled('municipio'))
-        {
-            $cliente->municipio = $request->municipio;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'municipio', $cliente);
 
         // uf
-        if ($request->filled('uf'))
-        {
-            $cliente->uf = $request->uf;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'uf', $cliente);
 
         //cep
-        if ($request->filled('cep'))
-        {
-            $cliente->cep = $request->cep;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'cep', $cliente);
 
         //telefone
-        if ($request->filled('telefone'))
-        {
-            $cliente->telefone = $request->telefone;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'telefone', $cliente);
 
         //celular
-        if ($request->filled('celular'))
-        {
-            $cliente->celular = $request->celular;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'celular', $cliente);
 
         //email
-        if ($request->filled('email'))
-        {
-            $cliente->email = $request->email;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'contato', $cliente);
 
         //observacao
-        if ($request->filled('observacao'))
-        {
-            $cliente->observacao = $request->observacao;
-        }
+        FormHelper::preencherCampoSeTiver($request, 'observacao', $cliente);
 
         $cliente->save();
 
@@ -185,5 +155,12 @@ class ClienteController extends Controller
         $cliente->save();
 
         return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+    }
+
+    public function destroy($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
+        return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso.');
     }
 }

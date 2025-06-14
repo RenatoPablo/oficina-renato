@@ -28,6 +28,8 @@ Route::middleware([CheckIsLogged::class])->group(function () {
     Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clientes.create');
     Route::post('/cliente/createSubmit', [ClienteController::class, 'createSubmit'])->name('clientes.create.submit');
     Route::put('/clientes/{id}', [ClienteController::class, 'editSubmit'])->name('clientes.update');
+    Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

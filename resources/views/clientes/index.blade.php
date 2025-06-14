@@ -15,6 +15,21 @@
                     </a>
                 </div>
 
+                <!-- Barra de pesquisa -->
+                <form method="GET" action="{{ route('clientes.index') }}" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Buscar por Nome ou CPF/CNPJ" value="{{ request()->search }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                        @if(request()->search)
+                            <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
+                                Limpar
+                            </a>
+                        @endif
+                    </div>
+                </form>
+
                 <!-- Tabela de clientes -->
                 <table class="table table-hover table-striped align-middle">
                     <thead class="table-dark">
@@ -40,7 +55,7 @@
                                     </a>
 
                                     <!-- Botão Excluir -->
-                                    <form action="{{ route('clientes.index', $cliente->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
@@ -56,6 +71,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                {{ $clientes->links() }}
             </div>
         </div>
     </div>
