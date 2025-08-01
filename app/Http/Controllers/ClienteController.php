@@ -108,7 +108,7 @@ class ClienteController extends Controller
 
         $cliente->save();
 
-        return redirect()->route('clientes.index');
+        return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
     }
 
     public function edit($encryptedId) 
@@ -157,10 +157,16 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
     }
 
-    public function destroy($id)
+    public function destroy($encryptedId)
     {
-        $cliente = Cliente::findOrFail($id);
-        $cliente->delete();
-        return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso.');
+        try {
+            $id = Crypt::decrypt($encryptedId);
+            $cliente = Cliente::findOrFail($id);
+            $cliente->delete();
+
+            return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso.');
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return redirect()->route('clientes.index')->with('error', 'ID inválido para exclusão.');
+        }
     }
 }

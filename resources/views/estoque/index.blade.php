@@ -2,65 +2,65 @@
 
 @section('content')
     <div class="container mt-4">
-        <!-- Título e botão para adicionar novo cliente -->
+        <!-- Título e botão para adicionar novo estoque -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white fw-bold">
-                <i class="bi bi-people"></i> Clientes
+                <i class="bi bi-people"></i> Estoque
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-dark">Lista de Clientes</h4>
-                    <a href="{{ route('clientes.create') }}" class="btn btn-success">
-                        <i class="bi bi-person-plus"></i> Novo Cliente
+                    <h4 class="text-dark">Lista de Estoque</h4>
+                    <a href="{{ route('estoque.create') }}" class="btn btn-success">
+                        <i class="bi bi-person-plus"></i> Nova entrada no estoque
                     </a>
                 </div>
 
                 <!-- Barra de pesquisa -->
-                <form method="GET" action="{{ route('clientes.index') }}" class="mb-4">
+                <form method="GET" action="{{ route('estoque.index') }}" class="mb-4">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Buscar por Nome ou CPF/CNPJ" value="{{ request()->search }}">
+                        <input type="text" name="search" class="form-control" placeholder="Buscar por descrição do estoque" value="{{ request()->search }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="bi bi-search"></i> Buscar
                         </button>
                         @if(request()->search)
-                            <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('estoque.index') }}" class="btn btn-secondary">
                                 Limpar
                             </a>
                         @endif
                     </div>
                 </form>
 
-                <!-- Tabela de clientes -->
+                <!-- Tabela de estoque -->
                 <table class="table table-hover table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>Nome</th>
-                            <th>Contato</th>
-                            <th>CPF/CNPJ</th>
-                            <th>Celular</th>
-                            <th>Email</th>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Quantidade</th>
+                            <th>Preço R$</th>
+                            <th>Medida</th>
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($clientes as $cliente)
+                        @forelse ($estoques as $estoque)
                             <tr>
-                                <td>{{ $cliente->nome }}</td>
-                                <td>{{ $cliente->contato }}</td>
-                                <td>{{ $cliente->cnpj_cpf_formatado }}</td>
-                                <td>{{ $cliente->celular }}</td>
-                                <td>{{ $cliente->email }}</td>
+                                <td>{{ $estoque->codigo }}</td>
+                                <td>{{ $estoque->descricao }}</td>
+                                <td>{{ $estoque->quantidade }}</td>
+                                <td>{{ $estoque->preco_rs }}</td>
+                                <td>{{ $estoque->medida }}</td>
                                 <td class="text-center">
                                     <!-- Botão Editar -->
-                                    <a href="{{ route('clientes.edit', ['id' => Crypt::encrypt($cliente->id)]) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('estoque.edit', ['id' => Crypt::encrypt($estoque->id)]) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     <!-- Botão Excluir -->
-                                    <form action="{{ route('clientes.destroy', ['id' => Crypt::encrypt($cliente->id)]) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('estoque.destroy', ['id' => Crypt::encrypt($estoque->id)]) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este item do estoque?')">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -68,12 +68,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">Nenhum cliente cadastrado.</td>
+                                <td colspan="5" class="text-center text-muted">Nenhum item de estoque cadastrado.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                {{ $clientes->links() }}
+                {{ $estoques->links() }}
             </div>
         </div>
     </div>

@@ -5,7 +5,12 @@ use App\Http\Middleware\CheckIsLogged;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServicoController;
+use App\Http\Controllers\VeiculoController;
+use App\Models\Estoque;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,7 +25,7 @@ Route::middleware([CheckIsNotLogged::class])->group(function () {
 
 //auth routes- user is logged
 Route::middleware([CheckIsLogged::class])->group(function () {
-    Route::get('/', [HomeController::class, 'index']);
+    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
     //routes for clientes
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
@@ -29,6 +34,29 @@ Route::middleware([CheckIsLogged::class])->group(function () {
     Route::post('/cliente/createSubmit', [ClienteController::class, 'createSubmit'])->name('clientes.create.submit');
     Route::put('/clientes/{id}', [ClienteController::class, 'editSubmit'])->name('clientes.update');
     Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+
+    //routes for estoques
+    Route::get('/estoque', [EstoqueController::class, 'index'])->name(('estoque.index'));
+    Route::get('/estoque/crete', [EstoqueController::class, 'create'])->name('estoque.create');
+    Route::post('/estoque/createSubmit', [EstoqueController::class, 'createSubmit'])->name('estoque.create.submit');
+    Route::get('/estoque/{id}/edit', [EstoqueController::class, 'edit'])->name('estoque.edit');
+    Route::put('/estoque/{id}', [EstoqueController::class, 'editSubmit'])->name('estoque.update');
+    Route::delete('cliente/{id}', [EstoqueController::class, 'destroy'])->name('estoque.destroy');
+
+    //routes for serviços
+    Route::get('/servicos', [ServicoController::class, 'index'])->name(('servico.index'));
+    Route::get('/servico/create', [ServicoController::class, 'create'])->name(('servico.create'));
+    Route::post('/servico/createSubmit', [ServicoController::class, 'createSubmit'])->name(('servico.create.submit'));
+    Route::get('/servico/{id}/edit', [ServicoController::class, 'edit'])->name(('servico.edit'));
+    Route::put('/servico/{id}', [ServicoController::class, 'editSubmit'])->name(('servico.update'));
+    Route::delete('/servico/{id}', [ServicoController::class, 'destroy'])->name(('servico.destroy'));
+
+    //routes for veiculos
+    Route::get('/veiculos', [VeiculoController::class, 'index'])->name(('veiculo.index'));
+    Route::get('/veiculo/create', [VeiculoController::class, 'create'])->name(('veiculo.create'));
+    Route::post('/veiculo/createSubmit', [VeiculoController::class, 'createSubmit'])->name(('veiculo.create.submit'));
+    //route for desassociar cliente
+    Route::put('/veiculo/{id}/desassociar-cliente', [VeiculoController::class, 'dessassociarCliente'])->name(('veiculo.desasociar.cliente'));
 
 
     Route::get('/logout', [AuthController::class, 'logout']);

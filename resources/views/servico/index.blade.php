@@ -2,65 +2,59 @@
 
 @section('content')
     <div class="container mt-4">
-        <!-- Título e botão para adicionar novo cliente -->
+        <!-- Título e botão para adicionar novo serviço -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white fw-bold">
-                <i class="bi bi-people"></i> Clientes
+                <i class="bi bi-tools"></i> Serviços
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-dark">Lista de Clientes</h4>
-                    <a href="{{ route('clientes.create') }}" class="btn btn-success">
-                        <i class="bi bi-person-plus"></i> Novo Cliente
+                    <h4 class="text-dark">Lista de Serviços</h4>
+                    <a href="{{ route('servico.create') }}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Novo Serviço
                     </a>
                 </div>
 
                 <!-- Barra de pesquisa -->
-                <form method="GET" action="{{ route('clientes.index') }}" class="mb-4">
+                <form method="GET" action="{{ route('servico.index') }}" class="mb-4">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Buscar por Nome ou CPF/CNPJ" value="{{ request()->search }}">
+                        <input type="text" name="search" class="form-control" placeholder="Buscar por descrição do serviço" value="{{ request()->search }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="bi bi-search"></i> Buscar
                         </button>
                         @if(request()->search)
-                            <a href="{{ route('clientes.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('servico.index') }}" class="btn btn-secondary">
                                 Limpar
                             </a>
                         @endif
                     </div>
                 </form>
 
-                <!-- Tabela de clientes -->
+                <!-- Tabela de serviços -->
                 <table class="table table-hover table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>Nome</th>
-                            <th>Contato</th>
-                            <th>CPF/CNPJ</th>
-                            <th>Celular</th>
-                            <th>Email</th>
+                            <th>Descrição</th>
+                            <th>Valor Unitário (R$)</th>
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($clientes as $cliente)
+                        @forelse ($servicos as $servico)
                             <tr>
-                                <td>{{ $cliente->nome }}</td>
-                                <td>{{ $cliente->contato }}</td>
-                                <td>{{ $cliente->cnpj_cpf_formatado }}</td>
-                                <td>{{ $cliente->celular }}</td>
-                                <td>{{ $cliente->email }}</td>
+                                <td>{{ $servico->descricao }}</td>
+                                <td>{{ number_format($servico->valor_unitario, 2, ',', '.') }}</td>
                                 <td class="text-center">
                                     <!-- Botão Editar -->
-                                    <a href="{{ route('clientes.edit', ['id' => Crypt::encrypt($cliente->id)]) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('servico.edit', ['id' => Crypt::encrypt($servico->id)]) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     <!-- Botão Excluir -->
-                                    <form action="{{ route('clientes.destroy', ['id' => Crypt::encrypt($cliente->id)]) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('servico.destroy', ['id' => Crypt::encrypt($servico->id)]) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este serviço?')">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -68,12 +62,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">Nenhum cliente cadastrado.</td>
+                                <td colspan="3" class="text-center text-muted">Nenhum serviço cadastrado.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                {{ $clientes->links() }}
+
+                {{ $servicos->links() }}
             </div>
         </div>
     </div>

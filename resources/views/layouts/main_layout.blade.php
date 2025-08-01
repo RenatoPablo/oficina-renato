@@ -18,16 +18,21 @@
             <a href="/veiculos"><i class="bi bi-truck"></i> Veículos</a>
             <a href="/ordens"><i class="bi bi-card-checklist"></i> Ordens de Serviço</a>
             <a href="/estoque"><i class="bi bi-box"></i> Estoque</a>
+            <a href="{{ route('servico.index') }}"><i class="bi bi-tools"></i> Serviços</a>
             <a href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a>
         </div>
 
         <!-- Conteúdo -->
         <div class="flex-grow-1">
             <nav class="navbar navbar-light px-3 d-flex align-items-center">
+                
                 <span class="hamburger" id="hamburger">
                     <i class="bi bi-list"></i>
                 </span>
                 <span class="ms-3 fw-bold">@yield('page_title', 'Painel da Oficina')</span>
+                <a href="{{ route('dashboard') }}" class="btn btn-light btn-sm me-2" title="Ir para Home">
+                    <i class="bi bi-house-door"></i>
+                </a>
             </nav>
 
             <div class="container mt-4">
@@ -36,7 +41,7 @@
             </div>
         </div>
     </div>
-
+    <script src="{{ asset('assets/js/alerts.js') }}"></script>
     <script src="{{ asset('assets/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/masks.js') }}"></script>
