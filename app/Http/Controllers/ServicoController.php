@@ -89,7 +89,7 @@ class ServicoController extends Controller
         
         $servico->save();
 
-        return redirect()->route('servico.index')->with('sucess', 'Serviço atualizado com sucesso!');
+        return redirect()->route('servico.index')->with('success', 'Serviço atualizado com sucesso!');
     }
 
     public function destroy($encryptedId)

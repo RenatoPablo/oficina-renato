@@ -20,7 +20,7 @@ class Cliente extends Model
         'cep',
         'telefone',
         'celular',
-        'email',
+        'email', 
         'observacao',
     ];
 
@@ -38,6 +38,8 @@ class Cliente extends Model
 
         return $this->cnpj_cpf; // Retorna como está se não for nenhum dos dois
     }
+
+
 
 }
 ?>

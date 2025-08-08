@@ -45,6 +45,9 @@
     <script src="{{ asset('assets/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/masks.js') }}"></script>
+    {{-- <script src="https://unpkg.com/imask"></script> --}}
+    <script src="{{ asset('assets/js/maskPlaca.js') }}"></script>
+
 
 </body>
 </html>

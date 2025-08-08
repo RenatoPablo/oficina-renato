@@ -32,15 +32,19 @@
                    value="{{ old('modelo') }}">
         </div>
 
-        {{-- placa --}}
+        {{-- Placa --}}
         <div class="col-md-6">
-            <label for="placa" class="form-label">Placa do Veiculo</label>
+            <label for="placa" class="form-label">Placa do Veículo</label>
             <input type="text" 
-                   class="form-control"
-                   name="placa"
-                   id="placa"
-                   value="{{ old('placa') }}">
+                class="form-control text-uppercase"
+                name="placa"
+                id="placa"
+                value="{{ old('placa') }}"
+                placeholder="AAA-1234 ou AAA1A23"
+                autocomplete="off">
+                
         </div>
+
 
         {{-- km --}}
         <div class="col-md-6">
@@ -59,9 +63,9 @@
                 <span class="input-group-text"><i class="bi bi-calendar-fill"></i></span>
                 <input type="number" 
                        class="form-control no-spin"
-                       name="placa"
-                       id="placa"
-                       value="{{ old('placa') }}">
+                       name="ano"
+                       id="ano"
+                       value="{{ old('ano') }}">
             </div>
         </div>
 

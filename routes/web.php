@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServicoController;
 use App\Http\Controllers\VeiculoController;
 use App\Models\Estoque;
+use App\Models\Veiculo;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
 
 Route::get('/', function () {
@@ -55,8 +56,12 @@ Route::middleware([CheckIsLogged::class])->group(function () {
     Route::get('/veiculos', [VeiculoController::class, 'index'])->name(('veiculo.index'));
     Route::get('/veiculo/create', [VeiculoController::class, 'create'])->name(('veiculo.create'));
     Route::post('/veiculo/createSubmit', [VeiculoController::class, 'createSubmit'])->name(('veiculo.create.submit'));
+    Route::get('/veiculo/{id}/edit', [VeiculoController::class, 'edit'])->name(('veiculo.edit'));
+    Route::put('/veiculo/{id}', [VeiculoController::class, 'editSubmit'])->name(('veiculo.update'));
     //route for desassociar cliente
-    Route::put('/veiculo/{id}/desassociar-cliente', [VeiculoController::class, 'dessassociarCliente'])->name(('veiculo.desasociar.cliente'));
+    Route::put('/veiculo/{id}/desassociar-cliente', [VeiculoController::class, 'desassociarCliente'])->name(('veiculo.desassociar.cliente'));
+    Route::delete('/veiculo/{id}', [VeiculoController::class, 'destroy'])->name(('veiculo.destroy'));
+    Route::get('/veiculo/{id}/historico', [VeiculoController::class, 'historicoProprietario'])->name(('veiculo.historico.proprietario'));
 
 
     Route::get('/logout', [AuthController::class, 'logout']);
