@@ -14,12 +14,12 @@
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar p-3">
             <h4 class="text-center mb-3">Oficina</h4>
-            <a href="/clientes"><i class="bi bi-people"></i> Clientes</a>
-            <a href="/veiculos"><i class="bi bi-truck"></i> Veículos</a>
-            <a href="/ordens"><i class="bi bi-card-checklist"></i> Ordens de Serviço</a>
-            <a href="/estoque"><i class="bi bi-box"></i> Estoque</a>
+            <a href="{{ route('clientes.index') }}"><i class="bi bi-people"></i> Clientes</a>
+            <a href="{{ route('veiculo.index') }}"><i class="bi bi-truck"></i> Veículos</a>
+            <a href="{{ route('ordem.index') }}"><i class="bi bi-card-checklist"></i> Ordens de Serviço</a>
+            <a href="{{ route('estoque.index') }}"><i class="bi bi-box"></i> Estoque</a>
             <a href="{{ route('servico.index') }}"><i class="bi bi-tools"></i> Serviços</a>
-            <a href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a>
+            <a href="{{ route('logout') }}"><i class="bi bi-box-arrow-right"></i> Sair</a>
         </div>
 
         <!-- Conteúdo -->
@@ -48,6 +48,11 @@
     {{-- <script src="https://unpkg.com/imask"></script> --}}
     <script src="{{ asset('assets/js/maskPlaca.js') }}"></script>
 
+    {{-- CONFERIR DEPOIS SE ESTA SENDO USADO POR ALGUMA PAGINA --}}
+    <script src="{{ asset('assets/js/os-itens.js') }}"></script>
+
+    {{-- ESTA SENDO USADO NA PAGINA ordens/itens.blade.php --}}
+    <script src="{{ asset('assets/js/os-itens-all.js') }}"></script>
 
 </body>
 </html>

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrdemServicoController;
 use App\Http\Controllers\ServicoController;
 use App\Http\Controllers\VeiculoController;
 use App\Models\Estoque;
@@ -64,5 +65,21 @@ Route::middleware([CheckIsLogged::class])->group(function () {
     Route::get('/veiculo/{id}/historico', [VeiculoController::class, 'historicoProprietario'])->name(('veiculo.historico.proprietario'));
 
 
-    Route::get('/logout', [AuthController::class, 'logout']);
+
+    //routes for ordem servico
+    Route::get('/ordem', [OrdemServicoController::class, 'index'])->name(('ordem.index'));
+    Route::get('/ordem/create', [OrdemServicoController::class, 'create'])->name(('ordem.create'));
+    Route::post('/ordem/store', [OrdemServicoController::class, 'store'])->name(('ordem.store'));
+    Route::get('/ordem/{id}/edit', [OrdemServicoController::class, 'edit'])->name(('ordem.edit'));
+    
+    //route for sync servico_ordem with ordem_servico
+    //conferir se esta usando depois
+    Route::post('/ordem/{id}/servico/create', [OrdemServicoController::class, 'servicosSync'])->name(('ordem.servico.sync'));
+
+    // salvar tudo de uma vez (servicos + pecas + frete)
+    Route::post('/ordem/{id}/sync-all', [OrdemServicoController::class, 'syncAll'])->name('ordem.syncAll');
+
+
+
+    Route::get('/logout', [AuthController::class, 'logout'])->name(('logout'));
 });
