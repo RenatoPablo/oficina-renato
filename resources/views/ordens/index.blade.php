@@ -82,7 +82,7 @@
             <td class="text-center">
               <div class="btn-group btn-group-sm">
                 <a class="btn btn-outline-primary" href="#"><i class="bi bi-eye"></i></a>
-                <a class="btn btn-outline-secondary" href="#"><i class="bi bi-pencil"></i></a>
+                <a class="btn btn-outline-secondary" href="{{ route('ordem.edit', Crypt::encrypt($os->id)) }}"><i class="bi bi-pencil"></i></a>
                 <a class="btn btn-outline-dark" target="_blank" href="#"><i class="bi bi-printer"></i></a>
               </div>
             </td>

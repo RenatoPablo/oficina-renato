@@ -33,7 +33,6 @@
         <div class="fw-semibold">Serviços</div>
 
         <div class="d-flex flex-wrap gap-2">
-          <input type="text" id="busca-servico" class="form-control form-control-sm" placeholder="Buscar serviço...">
           <select id="sel-servico" class="form-select form-select-sm">
             <option value="">-- Selecionar serviço --</option>
             @foreach($servicos as $s)
@@ -100,7 +99,6 @@
         <div class="fw-semibold">Peças / Estoque</div>
 
         <div class="d-flex flex-wrap gap-2">
-          <input type="text" id="busca-peca" class="form-control form-control-sm" placeholder="Buscar peça...">
           <select id="sel-peca" class="form-select form-select-sm">
             <option value="">-- Selecionar peça --</option>
             @foreach($estoques as $p)

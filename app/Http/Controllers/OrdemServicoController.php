@@ -9,6 +9,7 @@ use App\Models\Servico;
 use App\Models\ServicoOrdem;
 use App\Models\Veiculo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class OrdemServicoController extends Controller
@@ -104,12 +105,13 @@ class OrdemServicoController extends Controller
 
 
         return redirect()
-            ->route('ordem.edit', $os->id)
+            ->route('ordem.edit', Crypt::encrypt($os->id))
             ->with('success', 'OS criada. Agora adicione serviços e peças.');
     }
 
-    public function edit($id)
+    public function edit($encryptedId)
     {
+        $id = Crypt::decrypt($encryptedId);
 
         $os = OrdemServico::with(['veiculo','servicosItens.servico','pecasItens.estoque'])->findOrFail($id);
         
