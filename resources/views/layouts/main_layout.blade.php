@@ -8,6 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
+    
+    {{-- condição para OS CSS --}}
+    @if (request()->routeIs('ordem.*'))
+    <link rel="stylesheet" href="{{ asset('assets/css/os/edit-os.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/os/index-os.css') }}">
+    @endif
+    
 </head>
 <body>
     <div class="d-flex">
@@ -49,7 +56,7 @@
     <script src="{{ asset('assets/js/maskPlaca.js') }}"></script>
 
     {{-- CONFERIR DEPOIS SE ESTA SENDO USADO POR ALGUMA PAGINA --}}
-    <script src="{{ asset('assets/js/os-itens.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/os-itens.js') }}"></script> --}}
 
     {{-- ESTA SENDO USADO NA PAGINA ordens/itens.blade.php --}}
     <script src="{{ asset('assets/js/os-itens-all.js') }}"></script>

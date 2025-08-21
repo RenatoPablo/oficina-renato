@@ -1,0 +1,123 @@
+/* ===== Bordas das tabelas (sem mexer no HTML) ===== */
+.servicos-section .table-responsive,
+.pecas-section   .table-responsive {
+  border: 1px solid #e5e7eb;      /* borda externa */
+  border-radius: 12px;             /* cantos arredondados */
+  overflow: hidden;                /* pra borda pegar o cabeçalho também */
+  background: #fff;
+}
+
+/* Cabeçalho da tabela mais “grudado” nos campos */
+#tbl-servicos thead th,
+#tbl-pecas thead th {
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  padding-top: .35rem;             /* ↓ aproxima dos campos */
+  padding-bottom: .35rem;          /* ↓ aproxima dos campos */
+  font-size: .85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Linhas com menos altura (aproxima tudo) */
+#tbl-servicos tbody td, #tbl-servicos tfoot th,
+#tbl-pecas   tbody td, #tbl-pecas   tfoot th {
+  padding-top: .45rem;
+  padding-bottom: .45rem;
+}
+
+/* A primeira linha do body ainda mais perto do header */
+#tbl-servicos tbody tr:first-child td,
+#tbl-pecas   tbody tr:first-child td {
+  padding-top: .35rem;
+}
+
+/* Números alinhados e com dígitos tabulares */
+input[name$="[qtd]"],
+input[name$="[valor_unit]"],
+input[name$="[valor_total]"],
+#subtotal-servicos,
+#subtotal-pecas,
+#frete {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Readonly com carinha de subtotal/total */
+input[readonly] {
+  background-color: #f8fafc !important;
+  font-weight: 600;
+}
+
+/* Subtotais como “chip” discreto */
+#subtotal-servicos,
+#subtotal-pecas {
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+/* Total da OS com destaque suave */
+#total-os {
+  padding: .15rem .6rem;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #1f2937;
+}
+
+/* Hover leve nas linhas */
+#tbl-servicos tbody tr:hover,
+#tbl-pecas   tbody tr:hover {
+  background-color: #f7f7fa;
+}
+
+/* Ajuste de inputs dentro da tabela (altura/visual) */
+#tbl-servicos .form-control,
+#tbl-pecas   .form-control {
+  height: 36px;
+  line-height: 1.2;
+  padding: .3rem .5rem;
+}
+
+/* Junta o header e a tabela em um único bloco */
+.servicos-section .card-header,
+.pecas-section   .card-header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;           /* branco no header */
+  border-radius: 12px 12px 0 0;  /* arredonda só em cima */
+  padding: .75rem 1rem;
+}
+
+/* tabela encostada no header */
+.servicos-section .table-responsive,
+.pecas-section   .table-responsive {
+  border: 1px solid #e5e7eb;
+  border-top: none;           /* cola no header */
+  border-radius: 0 0 12px 12px; /* arredonda só embaixo */
+  background: #fff;
+  overflow: hidden;
+}
+
+/* thead e tbody brancos */
+#tbl-servicos thead th,
+#tbl-pecas thead th {
+  background: #fff !important;  /* nomes das colunas brancos */
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: .85rem;
+  color: #374151;
+  padding: .4rem .5rem;
+}
+
+#tbl-servicos tbody td,
+#tbl-pecas tbody td {
+  background: #fff;             /* linhas brancas */
+  padding: .45rem .5rem;
+}
+
+/* subtotal também branco, mas com leve destaque */
+#tbl-servicos tfoot th,
+#tbl-pecas tfoot th {
+  background: #fafafa;
+  border-top: 1px solid #e5e7eb;
+}

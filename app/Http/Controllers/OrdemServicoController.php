@@ -11,6 +11,7 @@ use App\Models\Veiculo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\SyncAllRequest;
 
 class OrdemServicoController extends Controller
 {
@@ -124,93 +125,100 @@ class OrdemServicoController extends Controller
 
     }
 
-    public function syncAll(Request $r, $id)
+    public function syncAll(SyncAllRequest $r, $id)
     {
         $os = OrdemServico::findOrFail($id);
 
         DB::transaction(function () use ($r, $os) {
-            // --------- SERVIÇOS ---------
-            $payloadServ = $r->input('servicos', []);
+            // ---------- PAYLOADS (já validados/normalizados pela SyncAllRequest) ----------
+            $servicos = $r->input('servicos', []);
+            $pecas    = $r->input('pecas', []);
 
-            // IDs já existentes no banco
+            // ===================== SERVIÇOS =====================
+            // ids existentes no banco (não-trashed)
             $existentesServIds = ServicoOrdem::where('ordem_servico_id', $os->id)->pluck('id')->all();
 
-            // IDs enviados pelo form (linhas que permaneceram na tela)
-            $enviadosServIds = collect($payloadServ)
-                ->pluck('id')
-                ->filter() // remove null/empty
-                ->map(fn($v) => (int) $v)
-                ->all();
+            // ids enviados na tela
+            $enviadosServIds = collect($servicos)->pluck('id')->filter()->map(fn($v) => (int) $v)->all();
 
-            // Apagar os que existiam mas não vieram no POST (usuário removeu na tela)
+            // soft-delete dos que foram removidos da UI
             $idsParaApagarServ = array_diff($existentesServIds, $enviadosServIds);
             if (!empty($idsParaApagarServ)) {
-                ServicoOrdem::whereIn('id', $idsParaApagarServ)->delete();
+                ServicoOrdem::whereIn('id', $idsParaApagarServ)->delete(); // SoftDeletes
             }
 
-            // Upsert (updateOrCreate) dos serviços
-            foreach ($payloadServ as $row) {
+            // upsert linha a linha
+            foreach ($servicos as $row) {
                 if (empty($row['servico_id'])) continue;
 
-                $idItem = $row['id'] ?? null;
-                $q      = (int)   ($row['qtd'] ?? 1);
-                $u      = (float) ($row['valor_unit'] ?? 0);
-                $tot    = $q * $u;
+                $q   = (float) ($row['qtd'] ?? 1);
+                $u   = (float) ($row['valor_unit'] ?? 0);
+                $tot = round($q * $u, 2); // calcula no servidor
 
-                ServicoOrdem::updateOrCreate(
-                    ['id' => $idItem], // se null, cria
-                    [
-                        'ordem_servico_id' => $os->id,
-                        'servico_id'       => $row['servico_id'],
-                        'qtd'              => $q,
-                        'valor_unit'       => $u,
-                        'valor_total'      => $tot,
-                        'tecnico'          => $row['tecnico']    ?? null,
-                        'codigo_cor'       => $row['codigo_cor'] ?? null,
-                    ]
-                );
+                $data = [
+                    'ordem_servico_id' => $os->id,
+                    'servico_id'       => (int) $row['servico_id'],
+                    'qtd'              => $q,
+                    'valor_unit'       => $u,
+                    'valor_total'      => $tot,
+                    'tecnico'          => $row['tecnico']    ?? null,
+                    'codigo_cor'       => $row['codigo_cor'] ?? null,
+                ];
+
+                // se veio id, atualiza garantindo que pertence à mesma OS; senão, cria
+                if (!empty($row['id'])) {
+                    $item = ServicoOrdem::where('id', (int) $row['id'])
+                        ->where('ordem_servico_id', $os->id)
+                        ->first();
+
+                    if ($item) $item->update($data);
+                    else       ServicoOrdem::create($data);
+                } else {
+                    ServicoOrdem::create($data);
+                }
             }
 
-            // --------- PEÇAS ---------
-            $payloadPecas = $r->input('pecas', []);
-
+            // ===================== PEÇAS =====================
             $existentesPecaIds = PecaOrdem::where('ordem_servico_id', $os->id)->pluck('id')->all();
-
-            $enviadosPecaIds = collect($payloadPecas)
-                ->pluck('id')
-                ->filter()
-                ->map(fn($v) => (int) $v)
-                ->all();
+            $enviadosPecaIds   = collect($pecas)->pluck('id')->filter()->map(fn($v) => (int) $v)->all();
 
             $idsParaApagarPecas = array_diff($existentesPecaIds, $enviadosPecaIds);
             if (!empty($idsParaApagarPecas)) {
-                PecaOrdem::whereIn('id', $idsParaApagarPecas)->delete();
+                PecaOrdem::whereIn('id', $idsParaApagarPecas)->delete(); // SoftDeletes
             }
 
-            foreach ($payloadPecas as $row) {
+            foreach ($pecas as $row) {
                 if (empty($row['estoque_id'])) continue;
 
-                $idItem = $row['id'] ?? null;
-                $q      = (float) ($row['qtd'] ?? 1);
-                $u      = (float) ($row['valor_unit'] ?? 0);
-                $tot    = $q * $u;
+                $q   = (float) ($row['qtd'] ?? 1);
+                $u   = (float) ($row['valor_unit'] ?? 0);
+                $tot = round($q * $u, 2);
 
-                PecaOrdem::updateOrCreate(
-                    ['id' => $idItem],
-                    [
-                        'ordem_servico_id' => $os->id,
-                        'estoque_id'       => $row['estoque_id'],
-                        'qtd'              => $q,
-                        'valor_unit'       => $u,
-                        'valor_total'      => $tot,
-                        'codigo_cor'       => $row['codigo_cor'] ?? null,
-                    ]
-                );
+                $data = [
+                    'ordem_servico_id' => $os->id,
+                    'estoque_id'       => (int) $row['estoque_id'],
+                    'qtd'              => $q,
+                    'valor_unit'       => $u,
+                    'valor_total'      => $tot,
+                    'codigo_cor'       => $row['codigo_cor'] ?? null,
+                ];
+
+                if (!empty($row['id'])) {
+                    $item = PecaOrdem::where('id', (int) $row['id'])
+                        ->where('ordem_servico_id', $os->id)
+                        ->first();
+
+                    if ($item) $item->update($data);
+                    else       PecaOrdem::create($data);
+                } else {
+                    PecaOrdem::create($data);
+                }
             }
 
-            // --------- FRETE E TOTAIS ---------
-            $os->frete = (float) ($r->input('frete', 0));
+            // ===================== FRETE & TOTAIS =====================
+            $os->frete = (float) $r->input('frete', 0);
 
+            // soma direto do banco (exclui soft-deletados por padrão)
             $totalServ = ServicoOrdem::where('ordem_servico_id', $os->id)->sum('valor_total');
             $totalPec  = PecaOrdem::where('ordem_servico_id', $os->id)->sum('valor_total');
 
@@ -222,6 +230,15 @@ class OrdemServicoController extends Controller
         });
 
         return back()->with('success', 'Itens salvos com sucesso!');
+    }
+
+    //FUNCAO PARA VALIDAR INPUTS DE VALOR
+    function normalizeCurrency(?string $v): float {
+        if ($v === null) return 0.0;
+        $v = preg_replace('/[^\d,\.]/', '', $v);
+        if (str_contains($v, ',')) $v = str_replace('.', '', $v); // tira milhares
+        $v = str_replace(',', '.', $v); // vírgula -> ponto
+        return (float) $v;
     }
 
 

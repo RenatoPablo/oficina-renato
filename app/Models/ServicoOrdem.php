@@ -21,6 +21,12 @@ class ServicoOrdem extends Model
         'codigo_cor',
     ];
 
+    protected $casts = [
+        'qtd'         => 'decimal:5',
+        'valor_unit'  => 'decimal:5',
+        'valor_total' => 'decimal:2',
+    ];
+
     // RELAÇÕES
     public function ordem()
     {
