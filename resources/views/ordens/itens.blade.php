@@ -1,211 +1,68 @@
 @extends('layouts.main_layout')
 
 @section('content')
-
 <div class="container mt-4">
-        
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="mb-3">
-                Editar Itens da OS #{{ $os->id }}
-                <small class="text-muted">— {{ $os->veiculo?->placa }} · {{ $os->veiculo?->marca }} {{ $os->veiculo?->modelo }}</small>
-              </h5>
+  {{-- Título + ações --}}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">
+      Itens da OS #{{ $os->id }}
+      <small class="text-muted">— {{ $os->veiculo?->placa }} · {{ $os->veiculo?->marca }} {{ $os->veiculo?->modelo }}</small>
+    </h5>
 
-              <a href="{{ route('ordem.index') }}" class="btn btn-secondary">
-                  <i class="bi bi-arrow-left"></i> Voltar
-              </a>
-          </div>
+    <div class="d-flex gap-2">
+      <a href="{{ route('ordem.edit', Crypt::encrypt($os->id)) }}" class="btn btn-outline-primary">
+        <i class="bi bi-gear"></i> Dados da OS
+      </a>
+      <a href="{{ route('ordem.show', Crypt::encrypt($os->id)) }}" class="btn btn-outline-secondary">
+        <i class="bi bi-eye"></i> Visualizar
+      </a>
+      <a href="{{ route('ordem.edit', Crypt::encrypt($os->id)) }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Voltar
+      </a>
+    </div>
+  </div>
 
-          @if ($errors->any())
-            <div class="alert alert-danger">
-              <strong>Corrija os campos em destaque.</strong>
-            </div>
-          @endif
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <strong>Corrija os campos em destaque.</strong>
+    </div>
+  @endif
 
-          <form action="{{ route('ordem.syncAll', $os->id) }}" method="POST" id="form-sync-all" class="card border-0 shadow-sm">
-            @csrf
+  {{-- ====== CARD: ITENS (FORM ÚNICO) ====== --}}
+  <form action="{{ route('ordem.syncAll', $os->id) }}" method="POST" id="form-sync-all" class="card border-0 shadow-sm">
+    @csrf
 
-            <div class="card-body">
+    <div class="card-header bg-light fw-semibold">Itens (Serviços & Peças)</div>
 
-              {{-- ======= SERVIÇOS ======= --}}
-              <div class="card mb-4 border-0 servicos-section">
-                <div class="card-header bg-light d-flex align-items-center flex-nowrap">
-                  <div class="fw-semibold me-3">Serviços</div>
+    <div class="card-body">
+      {{-- Parcial reaproveitável (sem <form>) --}}
+      @include('ordens.partials.itens', [
+        'os'        => $os,
+        'servicos'  => $servicos,
+        'estoques'  => $estoques
+      ])
+    </div>
 
-                  <div class="ms-auto d-flex align-items-center gap-2">
-                    <select id="sel-servico" class="form-select form-select-sm">
-                      <option value="">-- Selecionar serviço --</option>
-                      @foreach($servicos as $s)
-                        <option value="{{ $s->id }}" data-preco="{{ number_format($s->valor_unitario ?? 0, 2, '.', '') }}">
-                          {{ $s->descricao }}
-                        </option>
-                      @endforeach
-                    </select>
-                    <button type="button" class="btn btn-sm btn-primary" id="add-servico">Adicionar</button>
-                  </div>
-                </div>
+    <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="d-flex gap-2 align-items-center">
+        <label class="me-2">Frete</label>
+        <input type="text" class="form-control form-control-sm money" style="max-width:140px"
+          name="frete" id="frete" inputmode="decimal"
+          value="{{ number_format($os->frete ?? 0, 2, ',', '.') }}">
+      </div>
 
-                <div class="card-body p-0">
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0" id="tbl-servicos">
-                      <thead class="table-light">
-                        <tr>
-                          <th style="width:45%">Serviço</th>
-                          <th style="width:10%">Qtd</th>
-                          <th style="width:15%">Vlr Unit</th>
-                          <th style="width:15%">Total</th>
-                          <th style="width:15%"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($os->servicosItens as $i => $item)
-                          <tr>
-                            <td>
-                              <input type="hidden" name="servicos[{{ $i }}][id]" value="{{ $item->id }}">
-                              <select name="servicos[{{ $i }}][servico_id]" class="form-select">
-                                @foreach($servicos as $s)
-                                  <option value="{{ $s->id }}"
-                                          data-preco="{{ number_format($s->valor_unitario ?? 0, 2, '.', '') }}"
-                                          @selected($item->servico_id == $s->id)>
-                                    {{ $s->descricao }}
-                                  </option>
-                                @endforeach
-                              </select>
-                            </td>
-                            <td><input name="servicos[{{ $i }}][qtd]" type="number" step="1" class="form-control"
-                                      value="{{ number_format((float)$item->qtd, 0, ',', '') }}"></td>
-
-                            <td><input name="servicos[{{ $i }}][valor_unit]" type="text" class="form-control money" inputmode="decimal"
-                                      value="{{ number_format((float)$item->valor_unit, 2, ',', '') }}"></td>
-
-                            <td><input name="servicos[{{ $i }}][valor_total]" type="text" class="form-control money" inputmode="decimal" readonly
-                                        value="{{ number_format((float)$item->valor_total, 2, ',', '') }}"></td>
-                            <td class="text-end">
-                              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-line">Remover</button>
-                            </td>
-                          </tr>
-                        @endforeach
-                      </tbody>
-                      <tfoot class="table-light">
-                        <tr>
-                          <th colspan="3" class="text-end">Subtotal Serviços:</th>
-                          <th><input type="text" class="form-control form-control-sm" id="subtotal-servicos" value="0,00" readonly></th>
-                          <th></th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              {{-- ======= PEÇAS / ESTOQUE ======= --}}
-              <div class="card mb-2 border-0 pecas-section">
-                <div class="card-header bg-light d-flex align-items-center flex-nowrap">
-                  <div class="fw-semibold me-3">Peças / Estoque</div>
-
-                  <div class="ms-auto d-flex align-items-center gap-2">
-                    <select id="sel-peca" class="form-select form-select-sm">
-                      <option value="">-- Selecionar peça --</option>
-                      @foreach($estoques as $p)
-                        <option value="{{ $p->id }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">
-                          {{ $p->descricao }}
-                        </option>
-                      @endforeach
-                    </select>
-                    <button type="button" class="btn btn-sm btn-primary" id="add-peca">Adicionar</button>
-                  </div>
-                </div>
-
-                <div class="card-body p-0">
-                  <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0" id="tbl-pecas">
-                      <thead class="table-light">
-                        <tr>
-                          <th style="width:45%">Peça</th>
-                          <th style="width:10%">Qtd</th>
-                          <th style="width:15%">Vlr Unit</th>
-                          <th style="width:15%">Total</th>
-                          <th style="width:15%"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($os->pecasItens as $j => $item)
-                          <tr>
-                            <td>
-                              <input type="hidden" name="pecas[{{ $j }}][id]" value="{{ $item->id }}">
-                              <select name="pecas[{{ $j }}][estoque_id]" class="form-select">
-                                @foreach($estoques as $p)
-                                  <option value="{{ $p->id }}"
-                                          data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}"
-                                          @selected($item->estoque_id == $p->id)>
-                                    {{ $p->descricao }}
-                                  </option>
-                                @endforeach
-                              </select>
-                            </td>
-                            <td><input name="pecas[{{ $j }}][qtd]" type="number" step="1" class="form-control"
-                                      value="{{ number_format((float)$item->qtd, 0, ',', '') }}"></td>
-
-                            <td><input name="pecas[{{ $j }}][valor_unit]" type="text" class="form-control money" inputmode="decimal"
-                                      value="{{ number_format((float)$item->valor_unit, 2, ',', '') }}"></td>
-
-                            <td><input name="pecas[{{ $j }}][valor_total]" type="text" class="form-control money" inputmode="decimal" readonly
-                                      value="{{ number_format((float)$item->valor_total, 2, ',', '') }}"></td>
-                            <td class="text-end">
-                              <button type="button" class="btn btn-outline-danger btn-sm btn-remove-line">Remover</button>
-                            </td>
-                          </tr>
-                        @endforeach
-                      </tbody>
-                      <tfoot class="table-light">
-                        <tr>
-                          <th colspan="3" class="text-end">Subtotal Peças:</th>
-                          <th><input type="text" class="form-control form-control-sm" id="subtotal-pecas" value="0,00" readonly></th>
-                          <th></th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="card-footer d-flex justify-content-between align-items-center">
-              <div class="d-flex gap-2 align-items-center">
-                <label class="me-2">Frete</label>
-                <input type="text" class="form-control form-control-sm money" style="max-width:140px"
-                  name="frete" id="frete" inputmode="decimal" value="{{ number_format($os->frete ?? 0, 2, '.', '') }}">
-              </div>
-
-              <div class="d-flex gap-2 align-items-center">
-              <div class="d-flex gap-2 align-items-center justify-content-end me-3">
-                <div class="small text-muted">Total da OS:</div>
-                <div class="fw-bold fs-5" id="total-os">0,00</div>
-              </div>
-
-
-                <a href="{{ route('ordem.index') }}" class="btn btn-outline-secondary">
-                  <i class="bi bi-arrow-left"></i> Voltar
-                </a>
-                <button class="btn btn-primary">
-                  <i class="bi bi-save"></i> Salvar tudo
-                </button>
-              </div>
-            </div>
-          </form>
-
-          {{-- templates ocultos p/ criar novas linhas via JS --}}
-          <select id="servico_master" class="d-none">
-            @foreach($servicos as $s)
-              <option value="{{ $s->id }}" data-preco="{{ number_format($s->valor ?? 0, 2, '.', '') }}">{{ $s->descricao }}</option>
-            @endforeach
-          </select>
-
-          <select id="peca_master" class="d-none">
-            @foreach($estoques as $p)
-              <option value="{{ $p->id }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">{{ $p->descricao }}</option>
-            @endforeach
-          </select>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="text-end">
+          <div class="small text-muted">Total da OS:</div>
+          <div class="fw-bold fs-5" id="total-os">0,00</div>
         </div>
+        <button class="btn btn-primary">
+          <i class="bi bi-save"></i> Salvar tudo
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>
 @endsection

@@ -7,13 +7,23 @@
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/dist/css/bootstrap.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+    {{-- css de tabelas --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/tables.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
     
     {{-- condição para OS CSS --}}
     @if (request()->routeIs('ordem.*'))
-    <link rel="stylesheet" href="{{ asset('assets/css/os/edit-os.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/os/table-itens-os.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/os/index-os.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/os/create-os.css') }}">
     @endif
+
+    {{-- para carregar estoque --}}
+    @if (request()->routeIs('estoque.*'))
+    <link rel="stylesheet" href="{{ asset("assets/css/estoque/create-estoque.css") }}">
+    @endif
+
+
     
 </head>
 <body>
@@ -59,7 +69,10 @@
     {{-- <script src="{{ asset('assets/js/os-itens.js') }}"></script> --}}
 
     {{-- ESTA SENDO USADO NA PAGINA ordens/itens.blade.php --}}
-    <script src="{{ asset('assets/js/os-itens-all.js') }}"></script>
+    <script src="{{ asset('assets/js/os/os-itens-all.js') }}"></script>
+
+    {{-- PARA COLOCAR VIRGULA NOS INPUTS DE VALOR --}}
+    <script src="{{ asset('assets/js/input_valor.js') }}"></script>
 
 </body>
 </html>

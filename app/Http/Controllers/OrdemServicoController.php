@@ -110,126 +110,222 @@ class OrdemServicoController extends Controller
             ->with('success', 'OS criada. Agora adicione serviços e peças.');
     }
 
+   // META (dados gerais) – VIEW
     public function edit($encryptedId)
     {
         $id = Crypt::decrypt($encryptedId);
 
-        $os = OrdemServico::with(['veiculo','servicosItens.servico','pecasItens.estoque'])->findOrFail($id);
-        
-        // Carregamos catálogos aqui pra não mexer no controller
-        $servicos = Servico::orderBy('descricao')->get(['id','descricao','valor_unitario']);
-        $estoques =  Estoque::orderBy('descricao')->get(['id','descricao','preco_rs']);
+        $veiculos = Veiculo::select('id', 'marca', 'placa', 'modelo')->orderBy('modelo')->get();
+
+        $os = OrdemServico::with('veiculo')->findOrFail($id);
+        return view('ordens.edit', compact('os', 'veiculos'));        // <- usa ordens/edit.blade.php
+    }
 
 
-        return view('ordens.itens', compact('os', 'servicos', 'estoques'));
 
+    public function itens($encryptedId)
+    {
+        $id = Crypt::decrypt($encryptedId);
+
+        $os       = OrdemServico::with(['servicosItens','pecasItens','veiculo'])->findOrFail($id);
+        $servicos = Servico::orderBy('descricao')->get();
+        $estoques = Estoque::orderBy('descricao')->get();
+        return view('ordens.itens', compact('os','servicos','estoques')); // <- usa ordens/itens.blade.php
     }
 
     public function syncAll(SyncAllRequest $r, $id)
     {
         $os = OrdemServico::findOrFail($id);
 
-        DB::transaction(function () use ($r, $os) {
-            // ---------- PAYLOADS (já validados/normalizados pela SyncAllRequest) ----------
-            $servicos = $r->input('servicos', []);
-            $pecas    = $r->input('pecas', []);
+        try {
+            DB::transaction(function () use ($r, $os) {
+                // ---------- payloads ----------
+                $servicos = $r->input('servicos', []);
+                $pecas    = $r->input('pecas',    []);
 
-            // ===================== SERVIÇOS =====================
-            // ids existentes no banco (não-trashed)
-            $existentesServIds = ServicoOrdem::where('ordem_servico_id', $os->id)->pluck('id')->all();
-
-            // ids enviados na tela
-            $enviadosServIds = collect($servicos)->pluck('id')->filter()->map(fn($v) => (int) $v)->all();
-
-            // soft-delete dos que foram removidos da UI
-            $idsParaApagarServ = array_diff($existentesServIds, $enviadosServIds);
-            if (!empty($idsParaApagarServ)) {
-                ServicoOrdem::whereIn('id', $idsParaApagarServ)->delete(); // SoftDeletes
-            }
-
-            // upsert linha a linha
-            foreach ($servicos as $row) {
-                if (empty($row['servico_id'])) continue;
-
-                $q   = (float) ($row['qtd'] ?? 1);
-                $u   = (float) ($row['valor_unit'] ?? 0);
-                $tot = round($q * $u, 2); // calcula no servidor
-
-                $data = [
-                    'ordem_servico_id' => $os->id,
-                    'servico_id'       => (int) $row['servico_id'],
-                    'qtd'              => $q,
-                    'valor_unit'       => $u,
-                    'valor_total'      => $tot,
-                    'tecnico'          => $row['tecnico']    ?? null,
-                    'codigo_cor'       => $row['codigo_cor'] ?? null,
-                ];
-
-                // se veio id, atualiza garantindo que pertence à mesma OS; senão, cria
-                if (!empty($row['id'])) {
-                    $item = ServicoOrdem::where('id', (int) $row['id'])
-                        ->where('ordem_servico_id', $os->id)
-                        ->first();
-
-                    if ($item) $item->update($data);
-                    else       ServicoOrdem::create($data);
-                } else {
-                    ServicoOrdem::create($data);
+                // ============ SERVIÇOS (mantém teu código) ============
+                $existentesServIds = ServicoOrdem::where('ordem_servico_id', $os->id)->pluck('id')->all();
+                $enviadosServIds   = collect($servicos)->pluck('id')->filter()->map(fn($v)=>(int)$v)->all();
+                $idsParaApagarServ = array_diff($existentesServIds, $enviadosServIds);
+                if (!empty($idsParaApagarServ)) {
+                    ServicoOrdem::whereIn('id', $idsParaApagarServ)->delete();
                 }
-            }
+                foreach ($servicos as $row) {
+                    if (empty($row['servico_id'])) continue;
+                    $q   = (float) ($row['qtd'] ?? 1);
+                    $u   = (float) ($row['valor_unit'] ?? 0);
+                    $tot = round($q * $u, 2);
 
-            // ===================== PEÇAS =====================
-            $existentesPecaIds = PecaOrdem::where('ordem_servico_id', $os->id)->pluck('id')->all();
-            $enviadosPecaIds   = collect($pecas)->pluck('id')->filter()->map(fn($v) => (int) $v)->all();
+                    $data = [
+                        'ordem_servico_id' => $os->id,
+                        'servico_id'       => (int) $row['servico_id'],
+                        'qtd'              => $q,
+                        'valor_unit'       => $u,
+                        'valor_total'      => $tot,
+                        'tecnico'          => $row['tecnico']    ?? null,
+                        'codigo_cor'       => $row['codigo_cor'] ?? null,
+                    ];
 
-            $idsParaApagarPecas = array_diff($existentesPecaIds, $enviadosPecaIds);
-            if (!empty($idsParaApagarPecas)) {
-                PecaOrdem::whereIn('id', $idsParaApagarPecas)->delete(); // SoftDeletes
-            }
+                    if (!empty($row['id'])) {
+                        $item = ServicoOrdem::where('id', (int)$row['id'])
+                            ->where('ordem_servico_id', $os->id)
+                            ->first();
 
-            foreach ($pecas as $row) {
-                if (empty($row['estoque_id'])) continue;
-
-                $q   = (float) ($row['qtd'] ?? 1);
-                $u   = (float) ($row['valor_unit'] ?? 0);
-                $tot = round($q * $u, 2);
-
-                $data = [
-                    'ordem_servico_id' => $os->id,
-                    'estoque_id'       => (int) $row['estoque_id'],
-                    'qtd'              => $q,
-                    'valor_unit'       => $u,
-                    'valor_total'      => $tot,
-                    'codigo_cor'       => $row['codigo_cor'] ?? null,
-                ];
-
-                if (!empty($row['id'])) {
-                    $item = PecaOrdem::where('id', (int) $row['id'])
-                        ->where('ordem_servico_id', $os->id)
-                        ->first();
-
-                    if ($item) $item->update($data);
-                    else       PecaOrdem::create($data);
-                } else {
-                    PecaOrdem::create($data);
+                        $item ? $item->update($data) : ServicoOrdem::create($data);
+                    } else {
+                        ServicoOrdem::create($data);
+                    }
                 }
-            }
 
-            // ===================== FRETE & TOTAIS =====================
-            $os->frete = (float) $r->input('frete', 0);
+                // ===================== PEÇAS (AJUSTE POR DELTA AGREGADO) =====================
+                // Snapshot atual (não-trashed)
+                $atuais = PecaOrdem::where('ordem_servico_id', $os->id)->get()->keyBy('id');
 
-            // soma direto do banco (exclui soft-deletados por padrão)
-            $totalServ = ServicoOrdem::where('ordem_servico_id', $os->id)->sum('valor_total');
-            $totalPec  = PecaOrdem::where('ordem_servico_id', $os->id)->sum('valor_total');
+                // Mapa de ajustes por estoque_id
+                // Regra: valor POSITIVO => DEVOLVE; valor NEGATIVO => CONSUME
+                $ajustes = [];
 
-            $os->update([
-                'total_servicos' => $totalServ,
-                'total_pecas'    => $totalPec,
-                'total_os'       => $totalServ + $totalPec + $os->frete,
-            ]);
-        });
+                // 1) Itens removidos na UI -> devolve tudo
+                $idsEnviados = collect($pecas)->pluck('id')->filter()->map(fn($v)=>(int)$v)->all();
+                $removidos   = $atuais->keys()->diff($idsEnviados);
 
-        return back()->with('success', 'Itens salvos com sucesso!');
+                foreach ($removidos as $remId) {
+                    $item  = $atuais[$remId];
+                    $eid   = (int) $item->estoque_id;
+                    $qDevolve = (float) $item->qtd;
+                    if (!isset($ajustes[$eid])) $ajustes[$eid] = 0;
+                    $ajustes[$eid] += $qDevolve; // devolve
+                }
+
+                // 2) Itens enviados (novos ou existentes)
+                $linhasParaSalvar = [];   // guarda payload normalizado pra persistir depois
+                $idsProcessados   = [];
+
+                foreach ($pecas as $row) {
+                    if (empty($row['estoque_id'])) continue;
+
+                    $idLinha    = !empty($row['id']) ? (int)$row['id'] : null;
+                    $estoqueNew = (int) $row['estoque_id'];
+                    $qNova      = (float) ($row['qtd'] ?? 1);
+                    $u          = (float) ($row['valor_unit'] ?? 0);
+                    $tot        = round($qNova * $u, 2);
+
+                    $linhasParaSalvar[] = [
+                        'id'               => $idLinha,
+                        'ordem_servico_id' => $os->id,
+                        'estoque_id'       => $estoqueNew,
+                        'qtd'              => $qNova,
+                        'valor_unit'       => $u,
+                        'valor_total'      => $tot,
+                        'codigo_cor'       => $row['codigo_cor'] ?? null,
+                    ];
+                    if ($idLinha) $idsProcessados[] = $idLinha;
+
+                    if ($idLinha && isset($atuais[$idLinha])) {
+                        // EXISTENTE
+                        $ant = $atuais[$idLinha];
+                        $estoqueOld = (int) $ant->estoque_id;
+                        $qAnt       = (float) $ant->qtd;
+
+                        if ($estoqueOld === $estoqueNew) {
+                            // mesmo produto: consumir/devolver apenas o delta
+                            $delta = $qNova - $qAnt;
+                            if ($delta !== 0.0) {
+                                if (!isset($ajustes[$estoqueNew])) $ajustes[$estoqueNew] = 0;
+                                $ajustes[$estoqueNew] += (-$delta); // delta>0 consome (-); delta<0 devolve (+)
+                            }
+                        } else {
+                            // mudou de produto: devolve tudo do antigo e consome tudo do novo
+                            if (!isset($ajustes[$estoqueOld])) $ajustes[$estoqueOld] = 0;
+                            if (!isset($ajustes[$estoqueNew])) $ajustes[$estoqueNew] = 0;
+                            $ajustes[$estoqueOld] += $qAnt;     // devolve
+                            $ajustes[$estoqueNew] += (-$qNova); // consome
+                        }
+                    } else {
+                        // NOVO
+                        if (!isset($ajustes[$estoqueNew])) $ajustes[$estoqueNew] = 0;
+                        $ajustes[$estoqueNew] += (-$qNova); // consome total
+                    }
+                }
+
+                // 3) Aplica TODOS os ajustes de estoque primeiro (com trava)
+                //    Se algum ficar negativo, lança e aborta a transação inteira
+                foreach ($ajustes as $estoqueId => $ajuste) {
+                    if ($ajuste == 0.0) continue;
+                    Estoque::ajustarQuantidade((int)$estoqueId, (float)$ajuste);
+                }
+
+                // 4) Agora persiste as linhas (seguro pois estoque já conferido)
+                //    4.1 Deleta os removidos (já devolvidos no passo 1)
+                foreach ($removidos as $remId) {
+                    $atuais[$remId]->delete();
+                }
+
+                //    4.2 Upsert dos existentes e criação dos novos
+                foreach ($linhasParaSalvar as $data) {
+                    if (!empty($data['id'])) {
+                        PecaOrdem::where('id', $data['id'])
+                            ->where('ordem_servico_id', $os->id)
+                            ->update([
+                                'estoque_id'  => $data['estoque_id'],
+                                'qtd'         => $data['qtd'],
+                                'valor_unit'  => $data['valor_unit'],
+                                'valor_total' => $data['valor_total'],
+                                'codigo_cor'  => $data['codigo_cor'],
+                            ]);
+                    } else {
+                        PecaOrdem::create($data);
+                    }
+                }
+
+                // ============ FRETE & TOTAIS ============
+                $os->frete = (float) $r->input('frete', 0);
+                $os->save();
+                $os->recalcTotais(); // teu método no model
+            });
+
+            return back()->with('success', 'Itens e estoque atualizados com sucesso!');
+        } catch (\RuntimeException $e) {
+            // Erros de estoque (negativo etc.)
+            return back()->with('error', $e->getMessage())->withInput();
+        } catch (\Throwable $e) {
+            // Qualquer outra exceção
+            report($e);
+            return back()->with('error', 'Falha ao salvar a OS.')->withInput();
+        }
+    }
+
+    public function updateMeta(Request $r, $id)
+    {
+        $os = OrdemServico::findOrFail($id);
+
+        $data = $r->validate([
+            'proprietario'          => ['nullable','string','max:255'],
+            'situacao'              => ['required','in:Aberta,Em andamento,Finalizada,Cancelada'],
+            'data_previsao_entrega' => ['nullable','date'],
+            'observacoes'           => ['nullable','string'],
+        ]);
+
+        $os->fill($data)->save();
+
+        return back()->with('success', 'Dados da OS atualizados.');
+    }
+
+    public function fechar($encryptedId)
+    {
+        $id = Crypt::decrypt($encryptedId);
+        $os = OrdemServico::findOrFail($id);
+
+        // regra: só fecha se tiver itens, por exemplo
+        if ($os->total_os <= 0) {
+            return back()->with('error', 'Não é possível finalizar uma OS sem itens.');
+        }
+
+        $os->situacao = 'Finalizada';
+        $os->save();
+
+        // Trave edição de itens no front (exiba disabled) e no back (guards no syncAll)
+        return back()->with('success', 'OS finalizada!');
     }
 
     //FUNCAO PARA VALIDAR INPUTS DE VALOR
@@ -240,6 +336,20 @@ class OrdemServicoController extends Controller
         $v = str_replace(',', '.', $v); // vírgula -> ponto
         return (float) $v;
     }
+
+    function show($encryptedId)
+    {
+        $id = Crypt::decrypt($encryptedId);
+
+        $os = OrdemServico::with([
+            'veiculo',
+            'servicosItens.servico',
+            'pecasItens.estoque',
+        ])->findOrFail($id);
+
+        return view('ordens.show', compact('os'));
+    }
+    
 
 
 

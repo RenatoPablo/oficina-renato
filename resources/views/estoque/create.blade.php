@@ -5,7 +5,7 @@
         <!-- Título e botão voltar -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-dark">Nova Entrada no Estoque</h2>
-            <a href="{{ url('/clientes') }}" class="btn btn-secondary">
+            <a href="{{ route('estoque.index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Voltar
             </a>
         </div>

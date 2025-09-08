@@ -45,15 +45,20 @@ class OrdemServico extends Model
         return $this->hasMany(PecaOrdem::class, 'ordem_servico_id');
     }
 
-    // (Opcional) Recalcula totais
     public function recalcTotais(): void
     {
-        $totalServ = $this->servicosItens()->sum('valor_total');
-        $totalPecs = $this->pecasItens()->sum('valor_total');
-        $this->total_servicos = $totalServ;
-        $this->total_pecas    = $totalPecs;
-        $this->total_os       = $totalServ + $totalPecs + (float)($this->frete ?? 0);
-        $this->save();
+        $totalServ = ServicoOrdem::where('ordem_servico_id', $this->id)->sum('valor_total');
+        $totalPec  = PecaOrdem::where('ordem_servico_id', $this->id)->sum('valor_total');
+
+        // se futuramente tiver desconto, aplique aqui
+        $frete = (float) ($this->frete ?? 0);
+        $desconto = (float) ($this->desconto_valor ?? 0); // opcional, ver passo 3
+
+        $this->forceFill([
+            'total_servicos' => $totalServ,
+            'total_pecas'    => $totalPec,
+            'total_os'       => max(0, $totalServ + $totalPec + $frete - $desconto),
+        ])->save();
     }
                
 }

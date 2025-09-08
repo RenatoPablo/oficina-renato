@@ -1,0 +1,75 @@
+/* ====== Card base ====== */
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* ====== Labels ====== */
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: .35rem;
+}
+
+/* ====== Input group ====== */
+.input-group-text {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 1rem;
+  padding: .45rem .75rem;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Inputs normais e dentro do grupo */
+.form-control {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  padding: .45rem .75rem;
+  height: 42px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+/* Quando dentro de input-group (colado no ícone) */
+.input-group .form-control {
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+
+/* Focus mais clean */
+.form-control:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ====== Números (quantidade/preço) ====== */
+.no-spin::-webkit-outer-spin-button,
+.no-spin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.no-spin {
+  -moz-appearance: textfield;
+  text-align: right;
+}
+
+/* ====== Responsividade ====== */
+@media (max-width: 768px) {
+  .form-control {
+    font-size: 0.9rem;
+    height: 38px;
+  }
+  .form-label {
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== Alinhamento à direita para números e medidas ===== */
+#quantidade,
+#preco_rs {
+  text-align: right;
+  font-variant-numeric: tabular-nums; /* dígitos alinhados */
+}

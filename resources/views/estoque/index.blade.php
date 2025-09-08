@@ -30,49 +30,50 @@
                     </div>
                 </form>
 
-                <!-- Tabela de estoque -->
-                <table class="table table-hover table-striped align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Código</th>
-                            <th>Descrição</th>
-                            <th>Quantidade</th>
-                            <th>Preço R$</th>
-                            <th>Medida</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($estoques as $estoque)
+                <div class="table-wrap">
+                    <!-- Tabela de estoque -->
+                    <table class="table table-hover table-striped align-middle table-padrao">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $estoque->codigo }}</td>
-                                <td>{{ $estoque->descricao }}</td>
-                                <td>{{ $estoque->quantidade }}</td>
-                                <td>{{ $estoque->preco_rs }}</td>
-                                <td>{{ $estoque->medida }}</td>
-                                <td class="text-center">
-                                    <!-- Botão Editar -->
-                                    <a href="{{ route('estoque.edit', ['id' => Crypt::encrypt($estoque->id)]) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-
-                                    <!-- Botão Excluir -->
-                                    <form action="{{ route('estoque.destroy', ['id' => Crypt::encrypt($estoque->id)]) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este item do estoque?')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Quantidade</th>
+                                <th>Preço R$</th>
+                                <th>Medida</th>
+                                <th class="text-center">Ações</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Nenhum item de estoque cadastrado.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($estoques as $estoque)
+                                <tr>
+                                    <td>{{ $estoque->codigo }}</td>
+                                    <td>{{ $estoque->descricao }}</td>
+                                    <td>{{ $estoque->quantidade }}</td>
+                                    <td>{{ $estoque->preco_rs }}</td>
+                                    <td>{{ $estoque->medida }}</td>
+                                    <td class="text-center">
+                                        <!-- Botão Editar -->
+                                        <a href="{{ route('estoque.edit', ['id' => Crypt::encrypt($estoque->id)]) }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <!-- Botão Excluir -->
+                                        <form action="{{ route('estoque.destroy', ['id' => Crypt::encrypt($estoque->id)]) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este item do estoque?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Nenhum item de estoque cadastrado.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
                 {{ $estoques->links() }}
             </div>
         </div>

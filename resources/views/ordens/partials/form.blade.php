@@ -86,34 +86,27 @@
     @error('revisao_ate') <div class="invalid-feedback">{{ $message }}</div> @enderror
   </div>
 
-  {{-- Valores --}}
+  {{-- Valores (somente leitura, calculados no back) --}}
   <div class="col-md-2">
     <label class="form-label">Frete</label>
     <input type="number" step="0.01" name="frete"
-      value="{{ old('frete', $os->frete ?? 0) }}"
-      class="form-control @error('frete') is-invalid @enderror">
+          value="{{ old('frete', $os->frete ?? 0) }}"
+          class="form-control @error('frete') is-invalid @enderror"
+          placeholder="0,00">
     @error('frete') <div class="invalid-feedback">{{ $message }}</div> @enderror
   </div>
+
   <div class="col-md-2">
     <label class="form-label">Total Serviços</label>
-    <input type="number" step="0.01" name="total_servicos"
-      value="{{ old('total_servicos', $os->total_servicos ?? 0) }}"
-      class="form-control @error('total_servicos') is-invalid @enderror">
-    @error('total_servicos') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    <input type="text" class="form-control" value="{{ number_format($os->total_servicos ?? 0, 2, ',', '.') }}" readonly>
   </div>
   <div class="col-md-2">
     <label class="form-label">Total Peças</label>
-    <input type="number" step="0.01" name="total_pecas"
-      value="{{ old('total_pecas', $os->total_pecas ?? 0) }}"
-      class="form-control @error('total_pecas') is-invalid @enderror">
-    @error('total_pecas') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    <input type="text" class="form-control" value="{{ number_format($os->total_pecas ?? 0, 2, ',', '.') }}" readonly>
   </div>
   <div class="col-md-2">
     <label class="form-label">Total OS</label>
-    <input type="number" step="0.01" name="total_os"
-      value="{{ old('total_os', $os->total_os ?? 0) }}"
-      class="form-control @error('total_os') is-invalid @enderror">
-    @error('total_os') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    <input type="text" class="form-control fw-semibold" value="{{ number_format($os->total_os ?? 0, 2, ',', '.') }}" readonly>
   </div>
 
   {{-- Observações --}}
@@ -127,13 +120,13 @@
 
 </div>
 
-<hr class="my-3">
+{{-- <hr class="my-3"> --}}
 
-<div class="d-flex gap-2">
+{{-- <div class="d-flex gap-2">
   <a href="{{ route('ordem.index') }}" class="btn btn-outline-secondary">
     <i class="bi bi-arrow-left"></i> Voltar
   </a>
   <button class="btn btn-primary">
     <i class="bi bi-save"></i> Salvar
   </button>
-</div>
+</div> --}}

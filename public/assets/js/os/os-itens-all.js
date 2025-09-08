@@ -177,27 +177,72 @@
   const addPecBtn = $('#add-peca');
   const masterPec = $('#peca_master');
 
+  const selServ = $('#sel-servico');
+  const selPec  = $('#sel-peca');
+
+
   // adicionar linha serviço
   if (tblServ && addServBtn && masterServ) {
     addServBtn.addEventListener('click', () => {
+      const chosenVal   = selServ?.value || '';
+      const chosenPreco = selServ?.selectedOptions?.[0]?.dataset?.preco ?? '0.00';
+
+      if (!chosenVal) {
+        window.alert('Selecione um serviço antes de adicionar.');
+        return;
+      }
+
       const idx = nextIndex(bodyServ, 'servicos');
       const tr  = buildServicoRow(idx, optionHTML(masterServ));
       bodyServ.appendChild(tr);
+
+      // seta o serviço escolhido na linha nova e dispara change para preencher preço
+      const rowSelect = tr.querySelector(`select[name="servicos[${idx}][servico_id]"]`);
+      if (rowSelect) {
+        rowSelect.value = chosenVal;
+        rowSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        // fallback (quase nunca usado)
+        const unitEl = tr.querySelector('input[name$="[valor_unit]"]');
+        if (unitEl) unitEl.value = chosenPreco.replace('.', ',');
+      }
+
       recalcRow(tr);
       calcSubtotals();
     });
   }
 
+
   // adicionar linha peça
   if (tblPec && addPecBtn && masterPec) {
     addPecBtn.addEventListener('click', () => {
+      const chosenVal   = selPec?.value || '';
+      const chosenPreco = selPec?.selectedOptions?.[0]?.dataset?.preco ?? '0.00';
+
+      if (!chosenVal) {
+        window.alert('Selecione uma peça antes de adicionar.');
+        return;
+      }
+
       const idx = nextIndex(bodyPec, 'pecas');
       const tr  = buildPecaRow(idx, optionHTML(masterPec));
       bodyPec.appendChild(tr);
+
+      // seta a peça escolhida na linha nova e dispara change para preencher preço
+      const rowSelect = tr.querySelector(`select[name="pecas[${idx}][estoque_id]"]`);
+      if (rowSelect) {
+        rowSelect.value = chosenVal;
+        rowSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        const unitEl = tr.querySelector('input[name$="[valor_unit]"]');
+        if (unitEl) unitEl.value = chosenPreco.replace('.', ',');
+      }
+
       recalcRow(tr);
       calcSubtotals();
     });
   }
+
 
   // ligar comportamentos gerais
   wireBehaviors(document);

@@ -1,0 +1,149 @@
+/* ==============================
+   ESTILO DAS SEÇÕES (SERVIÇOS / PEÇAS)
+   ============================== */
+.servicos-section,
+.pecas-section {
+  margin-bottom: 1.5rem;
+}
+
+/* Header do card */
+.servicos-section .card-header,
+.pecas-section   .card-header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: .75rem 1rem;
+}
+
+/* Container da tabela */
+.servicos-section .table-responsive,
+.pecas-section   .table-responsive {
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ==============================
+   TABELAS
+   ============================== */
+#tbl-servicos,
+#tbl-pecas {
+  margin: 0;
+}
+
+/* Cabeçalho */
+#tbl-servicos thead th,
+#tbl-pecas thead th {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #374151;
+  padding: .4rem .5rem;
+  white-space: nowrap;
+}
+
+/* Corpo */
+#tbl-servicos tbody td,
+#tbl-pecas   tbody td {
+  background: #fff;
+  padding: .45rem .5rem;
+  vertical-align: middle;
+}
+
+/* Primeira linha mais próxima do header */
+#tbl-servicos tbody tr:first-child td,
+#tbl-pecas   tbody tr:first-child td {
+  padding-top: .35rem;
+}
+
+/* Rodapé (subtotais) */
+#tbl-servicos tfoot th,
+#tbl-pecas   tfoot th {
+  background: #fafafa;
+  border-top: 1px solid #e5e7eb;
+  padding: .45rem .5rem;
+  font-weight: 600;
+}
+
+/* Hover leve */
+#tbl-servicos tbody tr:hover,
+#tbl-pecas   tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ==============================
+   INPUTS
+   ============================== */
+#tbl-servicos .form-control,
+#tbl-pecas   .form-control {
+  height: 36px;
+  line-height: 1.2;
+  padding: .3rem .5rem;
+}
+
+/* Campos numéricos alinhados à direita */
+input[name$="[qtd]"],
+input[name$="[valor_unit]"],
+input[name$="[valor_total]"],
+#subtotal-servicos,
+#subtotal-pecas,
+#frete {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Campos readonly (totais/subtotais) */
+input[readonly] {
+  background-color: #f8fafc !important;
+  font-weight: 600;
+}
+
+/* Subtotais tipo “chip” */
+#subtotal-servicos,
+#subtotal-pecas {
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+/* Total OS em destaque */
+#total-os {
+  padding: .15rem .6rem;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ==============================
+   RESPONSIVIDADE
+   ============================== */
+@media (max-width: 768px) {
+  #tbl-servicos thead,
+  #tbl-pecas thead {
+    display: none; /* oculta cabeçalho */
+  }
+
+  #tbl-servicos tbody td,
+  #tbl-pecas tbody td {
+    display: block;
+    text-align: right;
+    padding: .5rem;
+  }
+
+  #tbl-servicos tbody td::before,
+  #tbl-pecas tbody td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #6b7280;
+  }
+}

@@ -16,7 +16,7 @@ class EstoqueController extends Controller
         'codigo' => 'nullable|string|max:255',
         'descricao' => 'required|string|max:255',
         'quantidade' => 'required|numeric|min:0',
-        'preco_rs' => 'required|numeric|min:0',
+        'preco_rs' => 'required|min:0',
         'medida' => 'nullable|string|max:10'
     ];
 
@@ -27,7 +27,6 @@ class EstoqueController extends Controller
         'quantidade.numeric' => 'A quantidade deve ser um número.',
         'quantidade.min' => 'A quantidade deve ser no mínimo :min.',
         'preco_rs.required' => 'O preço é obrigatório.',
-        'preco_rs.numeric' => 'O preço deve ser um número.',
         'preco_rs.min' => 'O preço deve ser no mínimo :min.',
         'medida.max' => 'A medida pode ter no máximo :max caracteres.',
         'codigo.max' => 'O código pode ter no máximo :max caracteres.'

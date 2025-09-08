@@ -71,13 +71,18 @@ Route::middleware([CheckIsLogged::class])->group(function () {
     Route::get('/ordem/create', [OrdemServicoController::class, 'create'])->name(('ordem.create'));
     Route::post('/ordem/store', [OrdemServicoController::class, 'store'])->name(('ordem.store'));
     Route::get('/ordem/{id}/edit', [OrdemServicoController::class, 'edit'])->name(('ordem.edit'));
+    Route::get('/ordem/{id}/itens', [OrdemServicoController::class, 'itens'])->name(('ordem.itens'));
     
     //route for sync servico_ordem with ordem_servico
     //conferir se esta usando depois
     Route::post('/ordem/{id}/servico/create', [OrdemServicoController::class, 'servicosSync'])->name(('ordem.servico.sync'));
 
     // salvar tudo de uma vez (servicos + pecas + frete)
-    Route::post('/ordem/{id}/sync-all', [OrdemServicoController::class, 'syncAll'])->name('ordem.syncAll');
+    Route::post('/ordem/{id}/sync-all', [OrdemServicoController::class, 'syncAll'])->name(('ordem.syncAll'));
+    Route::put('/ordem/{id}/meta', [OrdemServicoController::class, 'updateMeta'])->name(('ordem.updateMeta'));
+    Route::put('/ordem/{id}/fechar', [OrdemServicoController::class, 'fechar'])->name(('ordem.fechar'));
+
+    Route::get('/ordem/{id}/show', [OrdemServicoController::class, 'show'])->name(('ordem.show'));
 
 
 

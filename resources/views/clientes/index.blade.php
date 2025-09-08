@@ -31,48 +31,49 @@
                 </form>
 
                 <!-- Tabela de clientes -->
-                <table class="table table-hover table-striped align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Contato</th>
-                            <th>CPF/CNPJ</th>
-                            <th>Celular</th>
-                            <th>Email</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($clientes as $cliente)
+                <div class="table-wrap">
+                    <table class="table table-hover table-striped align-middle table-padrao">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $cliente->nome }}</td>
-                                <td>{{ $cliente->contato }}</td>
-                                <td>{{ $cliente->cnpj_cpf_formatado }}</td>
-                                <td>{{ $cliente->celular }}</td>
-                                <td>{{ $cliente->email }}</td>
-                                <td class="text-center">
-                                    <!-- Botão Editar -->
-                                    <a href="{{ route('clientes.edit', ['id' => Crypt::encrypt($cliente->id)]) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-
-                                    <!-- Botão Excluir -->
-                                    <form action="{{ route('clientes.destroy', ['id' => Crypt::encrypt($cliente->id)]) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>Nome</th>
+                                <th>Contato</th>
+                                <th>CPF/CNPJ</th>
+                                <th>Celular</th>
+                                <th>Email</th>
+                                <th class="text-center">Ações</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Nenhum cliente cadastrado.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($clientes as $cliente)
+                                <tr>
+                                    <td>{{ $cliente->nome }}</td>
+                                    <td>{{ $cliente->contato }}</td>
+                                    <td>{{ $cliente->cnpj_cpf_formatado }}</td>
+                                    <td>{{ $cliente->celular }}</td>
+                                    <td>{{ $cliente->email }}</td>
+                                    <td class="text-center">
+                                        <!-- Botão Editar -->
+                                        <a href="{{ route('clientes.edit', ['id' => Crypt::encrypt($cliente->id)]) }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <!-- Botão Excluir -->
+                                        <form action="{{ route('clientes.destroy', ['id' => Crypt::encrypt($cliente->id)]) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Nenhum cliente cadastrado.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
                 {{ $clientes->links() }}
             </div>
         </div>

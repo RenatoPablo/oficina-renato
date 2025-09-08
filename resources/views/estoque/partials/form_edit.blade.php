@@ -30,7 +30,7 @@
             <input type="number"
                    name="quantidade"
                    id="quantidade"
-                   class="form-control"
+                   class="form-control no-spin"
                    step="1"
                    value="{{ old('quantidade', $estoque->quantidade) }}">
         </div>
@@ -38,11 +38,10 @@
         <!-- Preço (R$) -->
         <div class="col-md-4">
             <label for="preco_rs" class="form-label no-spin">Preço (R$)</label>
-            <input type="number"
-                   step="0.01"
+            <input type="text"
                    name="preco_rs"
                    id="preco_rs"
-                   class="form-control"
+                   class="form-control money"
                    value="{{ old('preco_rs', $estoque->preco_rs) }}">
         </div>
 

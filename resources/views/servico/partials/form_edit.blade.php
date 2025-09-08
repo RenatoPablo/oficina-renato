@@ -21,11 +21,10 @@
         <!-- Preço (R$) -->
         <div class="col-md-4">
             <label for="preco_rs" class="form-label">Valor Unitário (R$)</label>
-            <input type="number"
-                   step="0.01"
+            <input type="text"
                    name="valor_unitario"
                    id="valor_unitario"
-                   class="form-control no-spin"
+                   class="form-control no-spin money"
                    value="{{ old('valor_unitario', $servico->valor_unitario) }}">
         </div>
     </div>

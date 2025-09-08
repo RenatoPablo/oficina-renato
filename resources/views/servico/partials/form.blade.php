@@ -9,7 +9,8 @@
                        name="descricao"
                        id="descricao"
                        class="form-control"
-                       value="{{ old('descricao') }}">
+                       value="{{ old('descricao') }}"
+                       placeholder="Digite a descrição do seu serviço">
             </div>
         </div>
 
@@ -17,12 +18,12 @@
         <!-- Preço (R$) -->
         <div class="col-md-4">
             <label for="preco_rs" class="form-label">Valor Unitário (R$)</label>
-            <input type="number"
-                   step="0.01"
+            <input type="text"
                    name="valor_unitario"
                    id="valor_unitario"
-                   class="form-control no-spin"
-                   value="{{ old('valor_unitario') }}">
+                   class="form-control no-spin money"
+                   value="{{ old('valor_unitario') }}"
+                   placeholder="0,00">
         </div>
     </div>
 </div>

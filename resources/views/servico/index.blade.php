@@ -30,43 +30,44 @@
                     </div>
                 </form>
 
-                <!-- Tabela de serviços -->
-                <table class="table table-hover table-striped align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Descrição</th>
-                            <th>Valor Unitário (R$)</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($servicos as $servico)
+                <div class="table-wrap">
+                    <!-- Tabela de serviços -->
+                    <table class="table table-hover table-striped align-middle table-padrao">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $servico->descricao }}</td>
-                                <td>{{ number_format($servico->valor_unitario, 2, ',', '.') }}</td>
-                                <td class="text-center">
-                                    <!-- Botão Editar -->
-                                    <a href="{{ route('servico.edit', ['id' => Crypt::encrypt($servico->id)]) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-
-                                    <!-- Botão Excluir -->
-                                    <form action="{{ route('servico.destroy', ['id' => Crypt::encrypt($servico->id)]) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este serviço?')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>Descrição</th>
+                                <th>Valor Unitário (R$)</th>
+                                <th class="text-center">Ações</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="text-center text-muted">Nenhum serviço cadastrado.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($servicos as $servico)
+                                <tr>
+                                    <td>{{ $servico->descricao }}</td>
+                                    <td>{{ number_format($servico->valor_unitario, 2, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        <!-- Botão Editar -->
+                                        <a href="{{ route('servico.edit', ['id' => Crypt::encrypt($servico->id)]) }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <!-- Botão Excluir -->
+                                        <form action="{{ route('servico.destroy', ['id' => Crypt::encrypt($servico->id)]) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este serviço?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">Nenhum serviço cadastrado.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
                 {{ $servicos->links() }}
             </div>

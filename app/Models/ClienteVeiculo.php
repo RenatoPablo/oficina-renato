@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ClienteVeiculo extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'cliente_veiculo';
 
+    protected $table = 'cliente_veiculo';
     public $timestamps = true;
 
     public function cliente()
@@ -23,3 +22,4 @@ class ClienteVeiculo extends Model
         return $this->belongsTo(Veiculo::class, 'veiculo_id');
     }
 }
+

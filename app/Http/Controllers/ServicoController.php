@@ -10,7 +10,7 @@ class ServicoController extends Controller
 {
     private $validaInputRules = [
         'descricao' => 'required|string|max:255',
-        'valor_unitario' => 'required|numeric|min:0'
+        'valor_unitario' => 'required|min:0'
     ];
 
     private $validaInputMessages = [

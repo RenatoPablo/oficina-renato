@@ -1,0 +1,116 @@
+/* ===== Página de Nova/Editar OS ===== */
+
+/* Card geral */
+.card.shadow-sm.border-0 {
+  border-radius: 12px;
+}
+
+/* Cabeçalho e rodapé do card mais definidos */
+.card .card-body { padding: 1.25rem 1.25rem; }
+.card .card-footer {
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+  padding: .75rem 1.25rem;
+}
+
+/* Título + botão voltar alinhados */
+.container .d-flex.justify-content-between.align-items-center.mb-3 {
+  gap: .75rem;
+}
+
+/* ===== Partial do formulário (funciona no create e no edit) ===== */
+
+/* grid com respiro agradável */
+.row.g-3 { row-gap: .75rem; }
+
+/* labels mais legíveis */
+.form-label {
+  font-weight: 600;
+  margin-bottom: .25rem;
+  color: #374151;
+}
+
+/* inputs/selects padrão */
+.form-control {
+  border: 1px solid #d0d7de;
+  border-radius: .5rem;
+  box-shadow: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  height: 42px;               /* altura consistente */
+  padding: .5rem .75rem;
+}
+
+.form-select {
+  border: 1px solid #d0d7de;
+  border-radius: .5rem;
+  box-shadow: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  height: 42px;               /* altura consistente */
+  width: 230px;
+  padding: .5rem .75rem;
+}
+
+/* textareas mantêm altura flexível */
+textarea.form-control {
+  min-height: 84px;
+  height: auto;
+  line-height: 1.35;
+}
+
+/* foco bonito */
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 .2rem rgba(13,110,253,.15);
+}
+
+/* mensagens de erro coladas ao campo */
+.invalid-feedback { margin-top: .25rem; }
+
+/* números alinhados à direita (frete/valores) */
+input[name="frete"],
+input[name="total_servicos"],
+input[name="total_pecas"],
+input[name="total_os"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* datetime com dígitos limpos */
+input[type="datetime-local"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* placeholders mais sutis */
+.form-control::placeholder { color: #9aa3af; }
+
+/* separador fino (se voltar a usar o <hr>) */
+hr.my-3 { border-top: 1px solid #e5e7eb; }
+
+/* Botões do rodapé do card (Salvar/Cancelar) */
+.card .card-footer .btn { min-width: 130px; }
+
+/* ===== Responsivo ===== */
+@media (max-width: 992px) {
+  .card .card-body { padding: 1rem; }
+}
+
+@media (max-width: 768px) {
+  /* stack dos botões no mobile (fica lindo) */
+  .card .card-footer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5rem;
+  }
+  .card .card-footer .btn { width: 100%; min-width: 0; }
+  /* inputs um pouco mais altos pra toque */
+  .form-control, .form-select { height: 46px; }
+}
+
+
+/* totais readonly com cara de resumo */
+input[readonly] {
+  background: #f8fafc !important;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

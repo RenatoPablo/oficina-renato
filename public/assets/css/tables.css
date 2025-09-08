@@ -1,0 +1,206 @@
+/* ============ WRAP (opcional para responsividade) ============ */
+.table-wrap {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  overflow: auto !important;     /* rolagem horizontal em telas pequenas */
+  background: #fff !important;
+}
+
+/* ============ CABEÇALHO ============ */
+.table.table-padrao thead th {
+  background-color: #212529 !important; /* estilo table-dark */
+  color: #fff !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  border-right: 1px solid rgba(255,255,255,.18) !important;
+  border-bottom: 1px solid #2f343a !important;
+}
+.table.table-padrao thead th:last-child { border-right: none !important; }
+
+/* ============ ZEBRA (independe do .table-striped) ============ */
+.table.table-padrao tbody tr:nth-child(odd)  > * { background-color: #ffffff !important; }
+.table.table-padrao tbody tr:nth-child(even) > * { background-color: #f8f9fa !important; }
+
+/* Caso alguém use .table-striped junto, ainda garantimos a zebra: */
+.table.table-padrao.table-striped > tbody > tr:nth-of-type(odd)  > * { background-color: #ffffff !important; }
+.table.table-padrao.table-striped > tbody > tr:nth-of-type(even) > * { background-color: #f8f9fa !important; }
+
+/* ============ HOVER ============ */
+.table.table-padrao tbody tr:hover > * { background-color: #eef2ff !important; }
+
+/* ============ DIVISÓRIAS VERTICAIS ============ */
+.table.table-padrao td,
+.table.table-padrao th {
+  border-right: 1px solid #e5e7eb !important;
+}
+.table.table-padrao td:last-child,
+.table.table-padrao th:last-child {
+  border-right: none !important;
+}
+
+/* Borda inferior suave em cada linha */
+.table.table-padrao tbody tr { border-bottom: 1px solid #eef2f7 !important; }
+
+/* ============ ESPAÇAMENTO / TIPOGRAFIA ============ */
+.table.table-padrao td,
+.table.table-padrao th {
+  padding: .65rem .75rem !important;
+  vertical-align: middle !important;
+  font-size: .95rem !important;
+}
+
+/* Números legíveis (Serviços / Peças / Frete / Total etc.) */
+.table.table-padrao td.text-end,
+.table.table-padrao th.text-end {
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* ============ COLUNA AÇÕES (opcional) ============ */
+.table.table-padrao .col-acoes { width: 120px !important; text-align: center !important; }
+.table.table-padrao .btn-group > .btn,
+.table.table-padrao td .btn { padding: .25rem .5rem !important; }
+
+/* ============ RESPONSIVO ============ */
+@media (max-width: 992px) {
+  .table-wrap { border-radius: 10px !important; }
+}
+
+/* Scrollbar sutil em telas largas */
+@media (min-width: 1200px) {
+  .table-wrap { scrollbar-width: thin !important; }
+}
+
+/* ===== acabamentos para a tabela padrão ===== */
+
+/* cabeçalho “grudado” e com cantos arredondados */
+.table-wrap { position: relative; }
+.table.table-padrao thead th {
+  position: sticky;
+  top: 0;                       /* se tiver um header fixo, ajuste aqui (ex.: 56px) */
+  z-index: 2;
+}
+.table.table-padrao thead tr:first-child th:first-child {
+  border-top-left-radius: 12px !important;
+}
+.table.table-padrao thead tr:first-child th:last-child {
+  border-top-right-radius: 12px !important;
+}
+
+/* sombra sob o cabeçalho quando há scroll */
+.table-wrap:has(thead th[style*="position: sticky"])::after {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 1px;
+  box-shadow: 0 6px 10px rgba(0,0,0,.06);
+  z-index: 1;
+}
+
+/* espaçamento ligeiramente mais confortável */
+.table.table-padrao td,
+.table.table-padrao th {
+  padding-top: .70rem !important;
+  padding-bottom: .70rem !important;
+}
+
+/* colunas numéricas: mesma largura e alinhamento */
+.table.table-padrao th.text-end,
+.table.table-padrao td.text-end {
+  width: 110px;                 /* serviços/peças/frete/total */
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* coluna ações: não deixar “dançar” */
+.table.table-padrao .col-acoes { width: 122px !important; }
+.table.table-padrao .btn-group .btn { line-height: 1 !important; }
+
+/* zebra um pouco mais marcada e hover ligeiro */
+.table.table-padrao tbody tr:nth-child(even) > * { background-color: #f4f6f8 !important; }
+.table.table-padrao tbody tr:hover > *          { background-color: #eaf0ff !important; }
+
+/* primeira coluna (#) bem estreita e com texto mais discreto */
+.table.table-padrao th:first-child,
+.table.table-padrao td:first-child {
+  width: 56px;
+  white-space: nowrap;
+}
+.table.table-padrao td:first-child { color: #6b7280; }
+
+/* bordas mais alinhadas (sem “duas linhas” na borda externa) */
+.table-wrap .table.table-padrao {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-wrap .table.table-padrao thead th,
+.table-wrap .table.table-padrao tbody td {
+  border-left: none !important;
+  border-right: 1px solid #e5e7eb !important;
+}
+.table-wrap .table.table-padrao thead th:last-child,
+.table-wrap .table.table-padrao tbody td:last-child {
+  border-right: none !important;
+}
+
+/* responsivo: permite scroll horizontal sem “quebrar” as células */
+@media (max-width: 992px) {
+  .table-wrap { border-radius: 10px !important; }
+  .table.table-padrao th.text-end,
+  .table.table-padrao td.text-end { width: 96px; }
+  .table.table-padrao .col-acoes { width: 112px !important; }
+}
+
+/* ===== Responsividade “de verdade” para .table-padrao ===== */
+
+/* o wrap garante scroll horizontal suave em telas pequenas */
+.table-wrap{
+  display:block;
+  width:100%;
+  overflow-x:auto;                 /* scroll horizontal quando precisar */
+  -webkit-overflow-scrolling:touch;
+  border:1px solid #e5e7eb;        /* mantém seu padrão */
+  border-radius:12px;
+  background:#fff;
+}
+
+/* evita a tabela “amassar” demais em telas estreitas */
+.table.table-padrao{
+  width:100%;
+  table-layout:auto;
+  min-width: 880px;                /* ajuste se quiser mais/menos colunas visíveis sem scroll */
+}
+
+/* cabeçalho sticky continua funcionado dentro do wrap */
+.table.table-padrao thead th{
+  position: sticky;
+  top: 0;                          /* se tiver navbar fixa, use o valor da altura (ex.: 56px) */
+  z-index: 2;
+}
+
+/* não deixar o conteúdo “quebrar” e estourar alturas em celular */
+.table.table-padrao td,
+.table.table-padrao th{
+  white-space: nowrap;             /* mantém uma linha; rola lateral quando necessário */
+}
+
+/* Se quiser permitir quebra apenas na coluna Cliente, 
+   coloque class="text-wrap" no <th> e nos <td> dessa coluna: */
+.table.table-padrao .text-wrap{
+  white-space: normal;             /* essa coluna pode quebrar em múltiplas linhas */
+}
+
+/* números continuam alinhados bonitos */
+.table.table-padrao td.text-end,
+.table.table-padrao th.text-end{
+  font-variant-numeric: tabular-nums;
+}
+
+/* mobile: um pouco menos de padding e fonte levemente menor */
+@media (max-width: 576px){
+  .table.table-padrao td,
+  .table.table-padrao th{
+    padding: .5rem .6rem !important;
+    font-size: .92rem;
+  }
+  .table.table-padrao{ min-width: 760px; } /* encurta a largura mínima no “super mobile” */
+}
