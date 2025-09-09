@@ -73,12 +73,14 @@
             <div class="border rounded p-3 h-100 avoid-break">
               <div class="fw-semibold mb-2"><i class="bi bi-person"></i> Cliente</div>
               @php
-                $clienteAtivo = \App\Models\ClienteVeiculo::where('veiculo_id', $os->veiculo_id)->where('ativo',true)->with('cliente')->first();
-                $clienteNome = $clienteAtivo?->cliente?->nome ?? 'Desassociado';
+                // Prioriza os snapshots congelados; se não tiver, cai pro relacionamento $os->cliente
+                $nome = $os->cliente_nome_snapshot ?? ($os->cliente->nome ?? 'Desassociado');
+                $fone = $os->cliente_telefone_snapshot ?? ($os->cliente->telefone ?? null);
               @endphp
-              <div>{{ $clienteNome }}</div>
-              @if($clienteAtivo?->cliente?->telefone)
-                <div class="text-muted small">{{ $clienteAtivo->cliente->telefone }}</div>
+
+              <div>{{ $nome }}</div>
+              @if($fone)
+                <div class="text-muted small">{{ $fone }}</div>
               @endif
             </div>
           </div>

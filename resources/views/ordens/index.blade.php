@@ -3,6 +3,7 @@
 @section('content')
 <div class="container mt-4">
   <div class="card shadow-sm border-0">
+
     {{-- Cabeçalho azul + botão à direita --}}
     <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center flex-wrap gap-2">
       <span><i class="bi bi-file-earmark-text me-1"></i> Ordens de Serviço</span>
@@ -12,11 +13,12 @@
     </div>
 
     <div class="card-body">
+
       {{-- Título --}}
       <h4 class="text-dark mb-3">Lista de Ordens de Serviço</h4>
 
       {{-- FILTROS responsivos --}}
-      <form method="GET" class="os-toolbar mb-3">
+      <form method="GET" action="{{ route('ordem.index') }}" class="os-toolbar mb-3">
         <div class="row g-2">
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <input name="numero" value="{{ request('numero') }}" class="form-control" placeholder="Nº OS">
@@ -31,7 +33,7 @@
             <select name="situacao" class="form-select">
               <option value="">Situação (todas)</option>
               @foreach (['Aberta','Em andamento','Finalizada','Cancelada'] as $opt)
-                <option value="{{ $opt }}" @selected(request('situacao')===$opt)>{{ $opt }}</option>
+                <option value="{{ $opt }}" @selected(request('situacao') === $opt)>{{ $opt }}</option>
               @endforeach
             </select>
           </div>
@@ -51,6 +53,7 @@
           </div>
         </div>
       </form>
+
       {{-- Tabela --}}
       <div class="table-wrap">
         <table class="table table-hover table-striped align-middle table-padrao">
@@ -71,22 +74,25 @@
           <tbody>
             @forelse ($ordens as $os)
               @php
-                $clienteAtivo = \App\Models\ClienteVeiculo::where('veiculo_id', $os->veiculo_id)
-                  ->where('ativo', true)->with('cliente')->first();
-                $clienteNome = $clienteAtivo?->cliente?->nome ?? 'Desassociado';
+                // Nome do cliente: prioridade pro snapshot congelado; se não tiver, usa relação
+                $clienteNome = $os->cliente_nome_snapshot ?? ($os->cliente->nome ?? 'Desassociado');
               @endphp
               <tr class="{{ $os->situacao === 'Aberta' ? '' : 'table-light' }}">
                 <td class="text-muted">#{{ $os->id }}</td>
                 <td class="text-nowrap">{{ \Carbon\Carbon::parse($os->data_chamado)->format('d/m/Y H:i') }}</td>
+
                 <td class="text-truncate" style="max-width:260px;">
                   <div class="small text-muted">{{ $os->veiculo->marca ?? '' }} {{ $os->veiculo->modelo ?? '' }}</div>
                   <strong class="text-uppercase">{{ $os->veiculo->placa ?? '—' }}</strong>
                 </td>
+
                 <td class="text-truncate" style="max-width:260px;">{{ $clienteNome }}</td>
-                <td class="text-end">{{ number_format($os->total_servicos, 2, ',', '.') }}</td>
-                <td class="text-end">{{ number_format($os->total_pecas, 2, ',', '.') }}</td>
-                <td class="text-end">{{ number_format($os->frete, 2, ',', '.') }}</td>
-                <td class="text-end fw-semibold">{{ number_format($os->total_os, 2, ',', '.') }}</td>
+
+                <td class="text-end">{{ number_format($os->total_servicos ?? 0, 2, ',', '.') }}</td>
+                <td class="text-end">{{ number_format($os->total_pecas ?? 0, 2, ',', '.') }}</td>
+                <td class="text-end">{{ number_format($os->frete ?? 0, 2, ',', '.') }}</td>
+                <td class="text-end fw-semibold">{{ number_format($os->total_os ?? 0, 2, ',', '.') }}</td>
+
                 <td>
                   @php
                     $map = ['Aberta'=>'success','Em andamento'=>'warning','Finalizada'=>'secondary','Cancelada'=>'danger'];
@@ -94,10 +100,15 @@
                   @endphp
                   <span class="badge rounded-pill text-bg-{{ $badge }}">{{ $os->situacao }}</span>
                 </td>
+
                 <td class="text-center">
                   <div class="btn-group btn-group-sm">
-                    <a class="btn btn-outline-primary" href="{{ route('ordem.show', Crypt::encrypt($os->id)) }}" title="Ver"><i class="bi bi-eye"></i></a>
-                    <a class="btn btn-outline-secondary" href="{{ route('ordem.edit', Crypt::encrypt($os->id)) }}" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <a class="btn btn-outline-primary" href="{{ route('ordem.show', Crypt::encrypt($os->id)) }}" title="Ver">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a class="btn btn-outline-secondary" href="{{ route('ordem.edit', Crypt::encrypt($os->id)) }}" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -116,6 +127,7 @@
       <div class="d-flex justify-content-end mt-3">
         {{ $ordens->links() }}
       </div>
+
     </div>
   </div>
 </div>

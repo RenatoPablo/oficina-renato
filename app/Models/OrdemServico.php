@@ -14,25 +14,33 @@ class OrdemServico extends Model
 
     // (opcional) defina os preenchíveis
     protected $fillable = [
+        // seus campos...
         'veiculo_id',
+        'situacao',
         'data_chamado',
         'data_previsao_entrega',
         'tipo_atendimento',
-        'situacao',
         'atendente',
         'problema_reclamado',
         'revisao_ate',
         'frete',
+        'observacoes',
+
+        // ⚠️ ADICIONE ESTES:
+        'cliente_id',
+        'cliente_veiculo_id',
+        'cliente_nome_snapshot',
+        'cliente_documento_snapshot',
+
         'total_servicos',
         'total_pecas',
         'total_os',
-        'observacoes',
     ];
 
     // RELAÇÕES
     public function veiculo()
     {
-        return $this->belongsTo(Veiculo::class);
+        return $this->belongsTo(Veiculo::class, 'veiculo_id');
     }
 
     public function servicosItens()
@@ -60,5 +68,13 @@ class OrdemServico extends Model
             'total_os'       => max(0, $totalServ + $totalPec + $frete - $desconto),
         ])->save();
     }
-               
+
+    public function cliente() {
+        return $this->belongsTo(\App\Models\Cliente::class, 'cliente_id');
+    }
+
+    public function clienteVeiculo() {
+        return $this->belongsTo(\App\Models\ClienteVeiculo::class, 'cliente_veiculo_id');
+    }
+                
 }

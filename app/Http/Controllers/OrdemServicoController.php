@@ -12,21 +12,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SyncAllRequest;
+use App\Models\ClienteVeiculo;
 use Illuminate\Contracts\Encryption\DecryptException;
 
 class OrdemServicoController extends Controller
 {
     private $validaInputRules = [
-            'veiculo_id' => 'required|exists:veiculos,id',
-            'data_chamado' => 'required|date',
-            'data_previsao_entrega' => 'nullable|date',
-            'tipo_atendimento' => 'nullable|string|max:255',
-            'situacao' => 'required|string|in:Aberta,Em andamento,Finalizada,Cancelada',
-            'atendente' => 'nullable|string|max:255',
-            'problema_reclamado' => 'nullable|string',
-            'revisao_ate' => 'nullable|string|max:255',
-            'frete' => 'nullable|numeric|min:0',
-            'observacoes' => 'nullable|string',
+        'veiculo_id' => 'required|exists:veiculos,id',
+        'data_chamado' => 'required|date',
+        'data_previsao_entrega' => 'nullable|date',
+        'tipo_atendimento' => 'nullable|string|max:255',
+        'situacao' => 'required|string|in:Aberta,Em andamento,Finalizada,Cancelada',
+        'atendente' => 'nullable|string|max:255',
+        'problema_reclamado' => 'nullable|string',
+        'revisao_ate' => 'nullable|string|max:255',
+        'frete' => 'nullable|numeric|min:0',
+        'observacoes' => 'nullable|string',
     ];
 
     private $validaInputMessage = [
@@ -60,19 +61,19 @@ class OrdemServicoController extends Controller
     ];
 
 
-    public function index(Request $request)
+     public function index(Request $request)
     {
-        $ordens = \App\Models\OrdemServico::with('veiculo') // só o essencial
-            ->when($request->filled('numero'), fn($q) => $q->where('id', $request->numero))
+        // Carrega também cliente pra fallback; NÃO buscar dono ativo aqui!
+        $ordens = OrdemServico::with(['veiculo', 'cliente'])
+            ->when($request->filled('numero'), fn($q) => $q->whereKey($request->numero))
             ->when($request->filled('placa'),  fn($q) => $q->whereHas('veiculo', fn($v) => $v->where('placa','like','%'.$request->placa.'%')))
             ->when($request->filled('situacao'), fn($q) => $q->where('situacao', $request->situacao))
-            // filtro por cliente via pivot ativo
-            ->when($request->filled('cliente'), function($q) use ($request) {
-                $q->whereIn('veiculo_id', function($sub) use ($request) {
-                    $sub->select('veiculo_id')->from('cliente_veiculo')
-                        ->join('clientes','cliente_veiculo.cliente_id','=','clientes.id')
-                        ->where('cliente_veiculo.ativo', true)
-                        ->where('clientes.nome','like','%'.$request->cliente.'%');
+            // Filtro por cliente usando snapshot OU relacionamento (histórico!)
+            ->when($request->filled('cliente'), function ($q) use ($request) {
+                $term = '%'.$request->cliente.'%';
+                $q->where(function($qq) use ($term) {
+                    $qq->where('cliente_nome_snapshot', 'like', $term)
+                       ->orWhereHas('cliente', fn($c) => $c->where('nome','like',$term));
                 });
             })
             ->orderByDesc('created_at')
@@ -91,35 +92,45 @@ class OrdemServicoController extends Controller
         return view('ordens.create', compact('veiculos'));
     }
 
-    public function store(Request $r)
+     public function store(Request $r)
     {
-        $data = $r->validate(
-            $this->validaInputRules,
-            $this->validaInputMessage
-        );
+        $data = $r->validate($this->validaInputRules, $this->validaInputMessage);
 
-        $os = OrdemServico::create($data + [
+        // Vínculo ATUAL do veículo (pra CONGELAR na OS)
+        $vinculo = ClienteVeiculo::with('cliente')
+            ->where('veiculo_id', $data['veiculo_id'])
+            ->where('ativo', true)
+            ->first();
+
+        $snapshot = [
+            'cliente_id'                  => $vinculo?->cliente_id,
+            'cliente_veiculo_id'          => $vinculo?->id,
+            'cliente_nome_snapshot'       => $vinculo?->cliente?->nome,
+            'cliente_documento_snapshot'  => $vinculo?->cliente?->cnpj_cpf
+                                         ?? $vinculo?->cliente?->cpf
+                                         ?? null,
+        ];
+
+        $os = OrdemServico::create($data + $snapshot + [
             'total_servicos' => 0,
             'total_pecas'    => 0,
             'total_os'       => 0,
         ]);
 
-
-
         return redirect()
             ->route('ordem.itens', Crypt::encrypt($os->id))
             ->with('success', 'OS criada. Agora adicione serviços e peças.');
     }
-
-   // META (dados gerais) – VIEW
+    
     public function edit($encryptedId)
     {
         $id = Crypt::decrypt($encryptedId);
 
         $veiculos = Veiculo::select('id', 'marca', 'placa', 'modelo')->orderBy('modelo')->get();
+        // carrega cliente também se for exibir na tela
+        $os = OrdemServico::with(['veiculo','cliente'])->findOrFail($id);
 
-        $os = OrdemServico::with('veiculo')->findOrFail($id);
-        return view('ordens.edit', compact('os', 'veiculos'));        // <- usa ordens/edit.blade.php
+        return view('ordens.edit', compact('os', 'veiculos'));
     }
 
 
@@ -128,15 +139,20 @@ class OrdemServicoController extends Controller
     {
         $id = Crypt::decrypt($encryptedId);
 
-        $os       = OrdemServico::with(['servicosItens','pecasItens','veiculo'])->findOrFail($id);
+        $os       = OrdemServico::with(['servicosItens','pecasItens','veiculo','cliente'])->findOrFail($id);
         $servicos = Servico::orderBy('descricao')->get();
         $estoques = Estoque::orderBy('descricao')->get();
-        return view('ordens.itens', compact('os','servicos','estoques')); // <- usa ordens/itens.blade.php
+
+        return view('ordens.itens', compact('os','servicos','estoques'));
     }
+
 
     public function syncAll(SyncAllRequest $r, $id)
     {
         $os = OrdemServico::findOrFail($id);
+        if ($os->situacao === 'Finalizada') {
+            return back()->with('error', 'Os finalizada não permite alterações');
+        }
 
         try {
             DB::transaction(function () use ($r, $os) {
@@ -280,9 +296,9 @@ class OrdemServicoController extends Controller
                 }
 
                 // ============ FRETE & TOTAIS ============
-                $os->frete = (float) $r->input('frete', 0);
+                $os->frete = $this->normalizeCurrency($r->input('frete', '0'));
                 $os->save();
-                $os->recalcTotais(); // teu método no model
+                $os->recalcTotais();
             });
 
             return back()->with('success', 'Itens e estoque atualizados com sucesso!');
@@ -296,19 +312,45 @@ class OrdemServicoController extends Controller
         }
     }
 
+
     public function updateMeta(Request $r, $id)
     {
         $os = OrdemServico::findOrFail($id);
 
+        if ($os->situacao === 'Finalizada') {
+            return back()->with('error', 'OS finalizada não permite alterações.');
+        }
+
         $data = $r->validate([
-            'proprietario'          => ['nullable','string','max:255'],
-            'veiculo_id'               => ['required', 'int'],
-            'situacao'              => ['required','in:Aberta,Em andamento,Finalizada,Cancelada'],
-            'data_previsao_entrega' => ['nullable','date'],
-            'observacoes'           => ['nullable','string'],
+            'proprietario'            => ['nullable','string','max:255'],
+            'veiculo_id'              => ['required','exists:veiculos,id'],
+            'situacao'                => ['required','in:Aberta,Em andamento,Finalizada,Cancelada'],
+            'data_previsao_entrega'   => ['nullable','date'],
+            'observacoes'             => ['nullable','string'],
         ]);
 
-        $os->fill($data)->save();
+        $os->fill($data);
+
+        // Se trocou o veículo, refaz o snapshot do dono do NOVO veículo
+        if ($os->isDirty('veiculo_id')) {
+            $vinculo = ClienteVeiculo::with('cliente')
+                ->where('veiculo_id', $os->veiculo_id)
+                ->where('ativo', true)
+                ->first();
+
+            if (!$vinculo) {
+                return back()->with('error', 'O veículo selecionado não possui proprietário ativo.')->withInput();
+            }
+
+            $os->cliente_id                 = $vinculo->cliente_id;
+            $os->cliente_veiculo_id         = $vinculo->id;
+            $os->cliente_nome_snapshot      = $vinculo->cliente?->nome;
+            $os->cliente_documento_snapshot = $vinculo->cliente?->cnpj_cpf
+                                        ?? $vinculo->cliente?->cpf
+                                        ?? null;
+        }
+
+        $os->save();
 
         return back()->with('success', 'Dados da OS atualizados.');
     }
@@ -339,14 +381,15 @@ class OrdemServicoController extends Controller
         return (float) $v;
     }
 
-    function show($encryptedId)
+    public function show($encryptedId)
     {
         $id = Crypt::decrypt($encryptedId);
 
         $os = OrdemServico::with([
-            'veiculo',
-            'servicosItens.servico',
-            'pecasItens.estoque',
+        'veiculo',
+        'cliente',                     // 👈 precisa disto
+        'servicosItens.servico',
+        'pecasItens.estoque',
         ])->findOrFail($id);
 
         return view('ordens.show', compact('os'));
@@ -356,15 +399,27 @@ class OrdemServicoController extends Controller
     {
         try {
             $id = Crypt::decrypt($encryptedId);
-        $os = OrdemServico::findOrFail($id);
-        $os->delete();
+            $os = OrdemServico::with(['pecasItens'])->findOrFail($id);
 
-        return redirect()->route('ordem.index')->with('success', 'Ordem de Serviço excluída com sucesso.');
-        } catch (DecryptException $th) {
-            return redirect()->route('oredm.index')->with('error', 'ID invalido para exclusão.');
+            DB::transaction(function() use ($os) {
+            // devolve estoque das peças
+            foreach ($os->pecasItens as $pi) {
+                // +qtd => devolve
+                \App\Models\Estoque::ajustarQuantidade($pi->estoque_id, + (float)$pi->qtd);
+            }
+
+            // apaga itens e a OS
+            $os->servicosItens()->delete();
+            $os->pecasItens()->delete();
+            $os->delete();
+            });
+
+            return redirect()->route('ordem.index')->with('success', 'OS excluída e estoque revertido.');
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('ordem.index')->with('error', 'Falha ao excluir OS.');
         }
     }
-
 
 
 }

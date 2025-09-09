@@ -36,6 +36,7 @@
                    value="{{ old('modelo', $veiculo->modelo) }}">
         </div>
 
+
         {{-- Placa --}}
         <div class="col-md-6">
             <label for="placa" class="form-label">Placa do Veículo</label>
@@ -43,8 +44,8 @@
                 class="form-control text-uppercase"
                 name="placa"
                 id="placa"
-                value="{{ old('placa'), $veiculo->placa }}"
-                placeholder="AAA-1234 ou AAA1A23"
+                value="{{ old('placa', $veiculo->placa) }}"
+                
                 autocomplete="off">
         </div>
 

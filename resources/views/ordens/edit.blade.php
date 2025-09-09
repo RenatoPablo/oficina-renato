@@ -48,7 +48,7 @@
               <div class="form-floating">
                 <input type="text" class="form-control" id="proprietario"
                        name="proprietario"
-                       value="{{ old('proprietario', $os->veiculo?->proprietario_nome ?? 'Desassociado') }}"
+                       value="{{ old('proprietario', $os->cliente_nome_snapshot ?? $os->cliente?->nome ?? 'Desassociado') }}"
                        placeholder="Proprietário" readonly>
                 <label for="proprietario" class="fw-semibold">Proprietário</label>
               </div>

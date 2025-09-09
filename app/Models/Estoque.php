@@ -27,14 +27,14 @@ class Estoque extends Model
      */
     public static function ajustarQuantidade(int $id, float $delta): void
     {
-        $est = static::where('id', $id)->lockForUpdate()->firstOrFail();
+    $item = static::lockForUpdate()->findOrFail($id);
+    $novo = (float)$item->qtd + $delta;
 
-        $novo = $est->quantidade + $delta;
-        if ($novo < 0) {
-            throw new \RuntimeException("Estoque insuficiente para o item #{$id}.");
-        }
+    if ($novo < 0) {
+        throw new \RuntimeException("Estoque insuficiente para o item #{$id}.");
+    }
 
-        $est->quantidade = $novo;
-        $est->save();
+    $item->qtd = $novo;
+    $item->save();
     }
 }
