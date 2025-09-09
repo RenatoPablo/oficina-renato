@@ -84,6 +84,8 @@ Route::middleware([CheckIsLogged::class])->group(function () {
 
     Route::get('/ordem/{id}/show', [OrdemServicoController::class, 'show'])->name(('ordem.show'));
 
+    Route::delete('/ordem/{id}/delete', [OrdemServicoController::class, 'destroy'])->name(('ordem.destroy'));
+
 
 
     Route::get('/logout', [AuthController::class, 'logout'])->name(('logout'));

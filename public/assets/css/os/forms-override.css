@@ -1,0 +1,25 @@
+/* forms-veh.css – override específico para o select de veículo */
+
+/* Força 58px dentro de form-floating, usando ID + classe (super específico) */
+.form-floating > #veiculo_id.select-veh-58{
+  height: 58px !important;
+  min-height: 58px !important;
+  line-height: 1.25 !important;
+  padding: 26px 2.25rem 10px 12px !important; /* top, right (caret), bottom, left */
+  box-sizing: border-box;
+  background-position: right .75rem center !important;
+}
+
+/* Ajusta o label SEM precisar de classe nele (irmão do select) */
+.form-floating > #veiculo_id.select-veh-58 ~ label{
+  height: 58px !important;
+  padding: .5rem .75rem !important;
+}
+
+/* Ganha de qualquer regra que fixe 42px nos seus toolbars */
+.os-toolbar .form-floating > #veiculo_id.select-veh-58,
+.os-index-page .os-index-toolbar .form-floating > #veiculo_id.select-veh-58{
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 26px 2.25rem 10px 12px !important;
+}

@@ -124,6 +124,12 @@
         <h5 class="mb-2">Serviços</h5>
         <div class="table-wrap mb-4">
           <table class="table table-hover align-middle table-padrao print-table">
+              <colgroup>
+                <col style="width:60%">  {{-- Descrição / Serviço / Peça --}}
+                <col style="width:10%">  {{-- Qtd --}}
+                <col style="width:15%">  {{-- Vlr Unit --}}
+                <col style="width:15%">  {{-- Total --}}
+              </colgroup>
             <thead class="table-dark">
               <tr>
                 <th>Serviço</th>
@@ -151,6 +157,12 @@
         <h5 class="mb-2">Peças</h5>
         <div class="table-wrap mb-4">
           <table class="table table-hover align-middle table-padrao print-table">
+              <colgroup>
+                <col style="width:60%">  {{-- Descrição / Serviço / Peça --}}
+                <col style="width:10%">  {{-- Qtd --}}
+                <col style="width:15%">  {{-- Vlr Unit --}}
+                <col style="width:15%">  {{-- Total --}}
+              </colgroup>
             <thead class="table-dark">
               <tr>
                 <th>Peça</th>
@@ -206,7 +218,7 @@
 </div>
 @endsection
 
-@push('styles')
+{{-- @push('styles')
 <style>
 /* ===== Utilidades ===== */
 .no-print { }
@@ -261,4 +273,4 @@
   .avoid-break { break-inside: avoid !important; page-break-inside: avoid !important; }
 }
 </style>
-@endpush
+@endpush --}}

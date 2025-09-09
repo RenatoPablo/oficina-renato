@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SyncAllRequest;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class OrdemServicoController extends Controller
 {
@@ -106,7 +107,7 @@ class OrdemServicoController extends Controller
 
 
         return redirect()
-            ->route('ordem.edit', Crypt::encrypt($os->id))
+            ->route('ordem.itens', Crypt::encrypt($os->id))
             ->with('success', 'OS criada. Agora adicione serviços e peças.');
     }
 
@@ -301,6 +302,7 @@ class OrdemServicoController extends Controller
 
         $data = $r->validate([
             'proprietario'          => ['nullable','string','max:255'],
+            'veiculo_id'               => ['required', 'int'],
             'situacao'              => ['required','in:Aberta,Em andamento,Finalizada,Cancelada'],
             'data_previsao_entrega' => ['nullable','date'],
             'observacoes'           => ['nullable','string'],
@@ -350,7 +352,18 @@ class OrdemServicoController extends Controller
         return view('ordens.show', compact('os'));
     }
     
+    public function destroy($encryptedId)
+    {
+        try {
+            $id = Crypt::decrypt($encryptedId);
+        $os = OrdemServico::findOrFail($id);
+        $os->delete();
 
+        return redirect()->route('ordem.index')->with('success', 'Ordem de Serviço excluída com sucesso.');
+        } catch (DecryptException $th) {
+            return redirect()->route('oredm.index')->with('error', 'ID invalido para exclusão.');
+        }
+    }
 
 
 

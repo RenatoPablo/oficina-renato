@@ -54,21 +54,43 @@
               </div>
             </div>
 
-            {{-- Veículo (select floating) --}}
-            <div class="col-12 col-md-6">
-              <div class="form-floating">
-                <select class="form-select" id="veiculo_id" name="veiculo_id" aria-label="Veículo">
-                  <option value="">Selecione um veículo...</option>
-                  @foreach($veiculos as $veiculo)
-                    <option value="{{ $veiculo->id }}"
-                      @selected(old('veiculo_id', $os->veiculo_id) == $veiculo->id)>
-                      {{ $veiculo->marca }} - {{ $veiculo->modelo }} ({{ $veiculo->placa }})
-                    </option>
-                  @endforeach
-                </select>
-                <label for="veiculo_id" class="fw-semibold">Veículo</label>
+            @if($os->situacao === 'Finalizada')
+              {{-- Veículo (select floating) readonly --}}
+              <div class="col-12 col-md-6">
+                <div class="form-floating">
+                  <input type="hidden" name="veiculo_id" value="{{ $os->veiculo->id }}">
+                  <input type="text"
+                         id="veiculo_input_id" 
+                         class="form-control text-end"
+                         value="{{ $os->veiculo->marca }} - {{ $os->veiculo->modelo }} - {{$os->veiculo->placa}}"
+                         readonly>
+                  <label for="veiculo_input_id" class="fw-semibold">Veiculo</label>
+                </div>
               </div>
-            </div>
+            @else
+              
+              {{-- Veículo (select floating) --}}
+              <div class="col-12 col-md-6">
+                <div class="form-floating">
+                  <select
+                    id="veiculo_id"
+                    name="veiculo_id"
+                    class="form-select w-100 select-full"
+                    aria-label="Veículo"
+                  >
+                    <option value="">Selecione um veículo...</option>
+                    @foreach($veiculos as $veiculo)
+                      <option value="{{ $veiculo->id }}"
+                        @selected(old('veiculo_id', $os->veiculo_id) == $veiculo->id)>
+                        {{ $veiculo->marca }} - {{ $veiculo->modelo }} ({{ $veiculo->placa }})
+                      </option>
+                    @endforeach
+                  </select>
+                  <label for="veiculo_id" class="fw-semibold">Veículo</label>
+                </div>
+              </div>
+
+            @endif
 
             {{-- Situação --}}
             <div class="col-12 col-md-6 col-lg-3">
@@ -112,6 +134,10 @@
                       class="btn btn-success">
                 <i class="bi bi-check2-circle"></i> Finalizar OS
               </button>
+              {{-- EXCLUIR: só visual aqui; quem envia é o form oculto lá embaixo --}}
+              <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                <i class="bi bi-trash"></i> Excluir
+              </button>
             @endif
           </div>
         </div>
@@ -119,4 +145,20 @@
     </div>
   </div>
 </div>
+
+{{-- FORM DELETAR (separado, fora do form principal) --}}
+<form id="delete-form"
+      action="{{ route('ordem.destroy', Crypt::encrypt($os->id)) }}"
+      method="POST" class="d-none">
+  @csrf
+  @method('DELETE')
+</form>
+
+<script>
+  function confirmDelete() {
+    if (confirm('Tem certeza que deseja excluir esta OS? Essa ação não pode ser desfeita.')) {
+      document.getElementById('delete-form').submit();
+    }
+  }
+</script>
 @endsection

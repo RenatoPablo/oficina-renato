@@ -4,27 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Auto Mecânica Renato')</title>
+
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/dist/css/bootstrap.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
-    {{-- css de tabelas --}}
     <link rel="stylesheet" href="{{ asset('assets/css/tables.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
-    
+
     {{-- condição para OS CSS --}}
     @if (request()->routeIs('ordem.*'))
-    <link rel="stylesheet" href="{{ asset('assets/css/os/table-itens-os.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/os/index-os.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/os/create-os.css') }}">
+      <link rel="stylesheet" href="{{ asset('assets/css/os/table-itens-os.css') }}">
+      <link rel="stylesheet" href="{{ asset('assets/css/os/index-os.css') }}">
+      <link rel="stylesheet" href="{{ asset('assets/css/os/create-os.css') }}">
+      <link rel="stylesheet" href="{{ asset('assets/css/os/forms-override.css') }}">
     @endif
 
     {{-- para carregar estoque --}}
     @if (request()->routeIs('estoque.*'))
-    <link rel="stylesheet" href="{{ asset("assets/css/estoque/create-estoque.css") }}">
+      <link rel="stylesheet" href="{{ asset('assets/css/estoque/create-estoque.css') }}">
     @endif
 
+    {{-- 🔥 Print global: aplica em TODAS as páginas quando for imprimir --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/print.css') }}" media="print">
 
-    
+    {{-- 🔥 Agora o stack funciona para CSS inline por página --}}
+    @stack('styles')
 </head>
 <body>
     <div class="d-flex">
@@ -42,7 +46,6 @@
         <!-- Conteúdo -->
         <div class="flex-grow-1">
             <nav class="navbar navbar-light px-3 d-flex align-items-center">
-                
                 <span class="hamburger" id="hamburger">
                     <i class="bi bi-list"></i>
                 </span>
@@ -58,21 +61,13 @@
             </div>
         </div>
     </div>
+
     <script src="{{ asset('assets/js/alerts.js') }}"></script>
     <script src="{{ asset('assets/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/masks.js') }}"></script>
-    {{-- <script src="https://unpkg.com/imask"></script> --}}
     <script src="{{ asset('assets/js/maskPlaca.js') }}"></script>
-
-    {{-- CONFERIR DEPOIS SE ESTA SENDO USADO POR ALGUMA PAGINA --}}
-    {{-- <script src="{{ asset('assets/js/os-itens.js') }}"></script> --}}
-
-    {{-- ESTA SENDO USADO NA PAGINA ordens/itens.blade.php --}}
     <script src="{{ asset('assets/js/os/os-itens-all.js') }}"></script>
-
-    {{-- PARA COLOCAR VIRGULA NOS INPUTS DE VALOR --}}
     <script src="{{ asset('assets/js/input_valor.js') }}"></script>
-
 </body>
 </html>
