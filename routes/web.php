@@ -14,9 +14,7 @@ use App\Models\Estoque;
 use App\Models\Veiculo;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 //auth routes - user not logged
 Route::middleware([CheckIsNotLogged::class])->group(function () {

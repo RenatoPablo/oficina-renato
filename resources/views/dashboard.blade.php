@@ -8,6 +8,7 @@
                 <div class="card p-4 shadow-sm bg-light">
                     <h2 class="text-dark">Bem-vindo, <span class="fw-bold">{{ session('user.name') ?? 'Usuário' }}</span></h2>
                     <p class="text-muted mb-0">{{ now()->format('d/m/Y H:i') }}</p>
+                     
                 </div>
             </div>
         </div>
@@ -15,26 +16,26 @@
         <!-- Alertas visuais (valores fictícios) -->
         <div class="row mt-4">
             <div class="col-md-4">
-                {{-- Substitua 3 por $estoqueBaixo no futuro --}}
-                @if (3 > 0)
+                @if ($estoqueBaixoCount > 0)
                     <div class="alert alert-warning shadow-sm">
-                        <i class="bi bi-exclamation-triangle-fill"></i> <strong>3</strong> produtos com estoque baixo.
+                        <i class="bi bi-exclamation-triangle-fill"></i> 
+                        <strong>{{ $estoqueBaixoCount }}</strong> produtos com estoque baixo.
                     </div>
                 @endif
             </div>
             <div class="col-md-4">
                 {{-- Substitua 2 por $ordensAtrasadas no futuro --}}
-                @if (2 > 0)
+                @if ($osAtrasadaCount > 0)
                     <div class="alert alert-danger shadow-sm">
-                        <i class="bi bi-x-circle-fill"></i> <strong>2</strong> ordens de serviço atrasadas.
+                        <i class="bi bi-x-circle-fill"></i> <strong>{{ $osAtrasadaCount }}</strong> ordens de serviço atrasadas.
                     </div>
                 @endif
             </div>
             <div class="col-md-4">
                 {{-- Substitua 1 por $veiculosAguardando no futuro --}}
-                @if (1 > 0)
+                @if ($osAbertaCount > 0)
                     <div class="alert alert-warning shadow-sm">
-                        <i class="bi bi-clock-history"></i> <strong>1</strong> veículo aguardando aprovação.
+                        <i class="bi bi-clock-history"></i> <strong>{{ $osAbertaCount }}</strong> Ordem de serviço estão abertas.
                     </div>
                 @endif
             </div>
@@ -59,7 +60,7 @@
                             </thead>
                             <tbody>
                                 {{-- Exemplo fixo, depois substitua por @foreach ($ordensRecentes as $ordem) --}}
-                                <tr>
+                                {{-- <tr>
                                     <td>João Silva</td>
                                     <td>Palio - ABC1234</td>
                                     <td><span class="badge bg-info">Em andamento</span></td>
@@ -76,19 +77,20 @@
                                     <td>Civic - HJK3456</td>
                                     <td><span class="badge bg-warning text-dark">Aguardando aprovação</span></td>
                                     <td>08/06/2025</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        {{-- Depois substitua por:
-                            @foreach ($ordensRecentes as $ordem)
+                                </tr> --}}
+                                
+                            @foreach ($ordens as $ordem)
                                 <tr>
-                                    <td>{{ $ordem->cliente }}</td>
-                                    <td>{{ $ordem->veiculo }}</td>
+                                    <td>{{ $ordem->cliente_nome_snapshot }}</td>
+                                    <td>{{ $ordem->veiculo->marca }} - {{ $ordem->veiculo->placa }}</td>
                                     <td><span class="badge bg-info">{{ $ordem->situacao }}</span></td>
-                                    <td>{{ $ordem->data->format('d/m/Y') }}</td>
+                                    <td class="text-nowrap">{{ \Carbon\Carbon::parse($ordem->data_chamado)->format('d/m/Y H:i') }}</td>
                                 </tr>
                             @endforeach
-                        --}}
+                       
+                            </tbody>
+                        </table>
+                        
                     </div>
                 </div>
             </div>
@@ -97,7 +99,7 @@
         <!-- Atalhos rápidos -->
         <div class="row mt-4 g-3">
             <div class="col-md-4">
-                <a href="/ordens/criar" class="btn btn-success w-100 p-3 shadow-sm">
+                <a href="{{ route('ordem.create') }}" class="btn btn-success w-100 p-3 shadow-sm">
                     <i class="bi bi-file-earmark-plus"></i> Nova Ordem de Serviço
                 </a>
             </div>

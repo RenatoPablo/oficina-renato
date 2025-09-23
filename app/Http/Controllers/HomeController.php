@@ -2,13 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estoque;
+use App\Models\OrdemServico;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    // HomeController.php
     public function index()
     {
-        return view('dashboard');
+        $ordens = \App\Models\OrdemServico::query()
+            ->select([
+                'id','veiculo_id','cliente_id',
+                'cliente_nome_snapshot',
+                'situacao','total_os','data_chamado','created_at',
+            ])
+            ->with([
+                'veiculo:id,placa,marca,modelo',
+                'cliente:id,nome,telefone', // só carrega o necessário
+            ])
+            ->latest('data_chamado')   // ou ->orderByDesc('created_at')
+            ->limit(5)                // ou ->paginate(10)
+            ->get();
+
+        $estoqueBaixoCount = Estoque::where('quantidade', '<', 5)->count();
+
+        $osAtrasadaCount = OrdemServico::where('data_previsao_entrega', '<', Carbon::today())->count();
+
+        $osAbertaCount = OrdemServico::where('situacao', '=', 'aberta')->count();
+
+
+        return view('dashboard', compact('ordens', 'estoqueBaixoCount', 'osAtrasadaCount', 'osAbertaCount'));
     }
 }
