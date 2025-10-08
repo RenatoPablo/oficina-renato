@@ -21,8 +21,8 @@ class EstoqueController extends Controller
     ];
 
     private $validaInputMessages = [
-        'descricao.required' => 'A descrição é obrigatória.',
-        'descricao.max' => 'A descrição pode ter no máximo :max caracteres.',
+        'descricao.required' => 'O nome é obrigatório.',
+        'descricao.max' => 'O nome pode ter no máximo :max caracteres.',
         'quantidade.required' => 'A quantidade é obrigatória.',
         'quantidade.numeric' => 'A quantidade deve ser um número.',
         'quantidade.min' => 'A quantidade deve ser no mínimo :min.',
@@ -48,7 +48,7 @@ class EstoqueController extends Controller
             });
         }
 
-        $estoques = $estoques->orderBy('descricao')->paginate(10)->withQueryString();
+        $estoques = $estoques->orderByDesc('created_at')->paginate(10)->withQueryString();
 
         return view('estoque.index', compact('estoques'));
     }
@@ -72,7 +72,7 @@ class EstoqueController extends Controller
 
         $estoque->quantidade = $request->quantidade;
 
-        $estoque->preco_rs = $request->preco_rs;
+        $estoque->preco_rs = (float) $request->preco_rs;
 
         //codigo
         FormHelper::preencherCampoSeTiver($request, 'codigo', $estoque);
