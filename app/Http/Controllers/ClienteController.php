@@ -7,25 +7,35 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+
 
 class ClienteController extends Controller
 {
 
-    private $validaInputRules = [
-        'nome' => 'required|string|max:255',
-        'contato' => 'nullable|string|max:255',
-        'ie_rg' => 'nullable|string|max:50',
-        'cnpj_cpf' => 'nullable|string|max:20|unique:clientes,cnpj_cpf,',
-        'endereco' => 'nullable|string|max:255',
-        'bairro' => 'nullable|string|max:100',
-        'municipio' => 'nullable|string|max:100',
-        'uf' => 'nullable|string|size:2',
-        'cep' => 'nullable|string|max:9',
-        'telefone' => 'nullable|string|max:20',
-        'celular' => 'nullable|string|max:20',
-        'email' => 'nullable|email|max:255',
-        'observacao' => 'nullable|string'
-    ];
+        private function getValidaInputRules(?int $clienteId = null): array
+        {
+            return [
+                'nome'      => 'required|string|max:255',
+                'contato'   => 'nullable|string|max:255',
+                'ie_rg'     => 'nullable|string|max:50',
+                'cnpj_cpf'  => [
+                    'nullable','string','max:20',
+                    Rule::unique('clientes','cnpj_cpf')
+                        ->where(fn($q) => $q->where('user_id', Auth::id()))
+                        ->ignore($clienteId), // <- chave para o edit
+                ],
+                'endereco'  => 'nullable|string|max:255',
+                'bairro'    => 'nullable|string|max:100',
+                'municipio' => 'nullable|string|max:100',
+                'uf'        => 'nullable|string|size:2',
+                'cep'       => 'nullable|string|max:9',
+                'telefone'  => 'nullable|string|max:20',
+                'celular'   => 'nullable|string|max:20',
+                'email'     => 'nullable|email|max:255',
+                'observacao'=> 'nullable|string',
+            ];
+        }
 
     private $validaInputMessages = [
         'nome.required' => 'O nome é obrigatório.',
@@ -64,7 +74,7 @@ class ClienteController extends Controller
     {
         // validate request
         $request->validate(
-            $this->validaInputRules,
+            $this->getValidaInputRules(),
             $this->validaInputMessages
         );
 
@@ -125,7 +135,7 @@ class ClienteController extends Controller
     public function editSubmit(Request $request) 
     {
         // validate request
-        $rules = $this->validaInputRules;
+        $rules = $this->getValidaInputRules($request->id);
         $rules['cnpj_cpf'] = [
             'nullable',
             'string',

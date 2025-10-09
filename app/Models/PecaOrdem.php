@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PecaOrdem extends Model
+class PecaOrdem extends TenantModel
 {
     use SoftDeletes;
+    use BelongsToUser;
     
     protected $table = 'pecas_ordem';
 
@@ -18,6 +20,7 @@ class PecaOrdem extends Model
         'valor_unit',
         'valor_total',
         'codigo_cor',
+        'user_id'
     ];
 
     protected $casts = [

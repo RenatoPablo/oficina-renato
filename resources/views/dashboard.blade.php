@@ -82,7 +82,11 @@
                             @foreach ($ordens as $ordem)
                                 <tr>
                                     <td>{{ $ordem->cliente_nome_snapshot }}</td>
-                                    <td>{{ $ordem->veiculo->marca }} - {{ $ordem->veiculo->placa }}</td>
+                                    <td>
+                                        {{ $ordem->veiculo?->marca ?? '—' }}
+                                        -
+                                        {{ $ordem->veiculo?->placa ?? '—' }}
+                                    </td>
                                     <td><span class="badge bg-info">{{ $ordem->situacao }}</span></td>
                                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($ordem->data_chamado)->format('d/m/Y H:i') }}</td>
                                 </tr>

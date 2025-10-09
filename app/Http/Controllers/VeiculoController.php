@@ -10,20 +10,27 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Laravel\Ui\Presets\React;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class VeiculoController extends Controller
 {
-    private $validaInputRules = [
-        'tipo'   => 'required|string|max:255',
-        'marca'  => 'required|string|max:255',
-        'modelo' => 'required|string|max:255',
-        'placa'  => [
-            'required',
-            'regex:/^[A-Z]{3}-\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/i'
-        ],
-        'km'  => 'numeric|nullable',
-        'ano' => 'numeric|digits:4|nullable'
-    ];
+    private function validaInputRules($veiculoId = null): array
+    {
+        return [
+            'tipo'   => 'required|string|max:255',
+            'marca'  => 'required|string|max:255',
+            'modelo' => 'required|string|max:255',
+            'placa'  => [
+                'required',
+                Rule::unique('veiculos', 'placa')
+                    ->where(fn($q) => $q->where('user_id', Auth::id()))
+                    ->ignore($veiculoId), // pra editar sem dar erro
+            ],
+            'km'  => 'nullable|numeric',
+            'ano' => 'nullable|digits:4',
+        ];
+    }
 
     private $validaInputMessages = [
         'tipo.required'   => 'O tipo deve ser preenchido.',
@@ -150,7 +157,7 @@ class VeiculoController extends Controller
     public function createSubmit(Request $request)
     {
         $request->validate(
-            $this->validaInputRules,
+            $this->validaInputRules(),
             $this->validaInputMessages
         );
 
@@ -211,7 +218,7 @@ class VeiculoController extends Controller
 
         
         $request->validate(
-            $this->validaInputRules,
+            $this->validaInputRules($request->id),
             $this->validaInputMessages
         );
 

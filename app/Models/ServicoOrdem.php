@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ServicoOrdem extends Model
+class ServicoOrdem extends TenantModel
 {
     use SoftDeletes;
+    use BelongsToUser;
     
     protected $table = 'servicos_ordem';
 
@@ -19,6 +21,7 @@ class ServicoOrdem extends Model
         'valor_total',
         'tecnico',
         'codigo_cor',
+        'user_id',
     ];
 
     protected $casts = [

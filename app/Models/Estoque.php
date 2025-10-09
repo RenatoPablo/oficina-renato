@@ -2,39 +2,51 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\throwException;
-
-class Estoque extends Model
+class Estoque extends TenantModel
 {
-    use SoftDeletes;
+    use SoftDeletes, BelongsToUser;
+
+    protected $table = 'estoques';
 
     protected $fillable = [
-        'codigo',
-        'descricao',
-        'quantidade',
-        'preco_rs',
-        'medida'
+        'codigo','codigo_barras','descricao','medida','preco_rs','preco_usd',
+        'custo_compra','custo_medio','quantidade','qtd_minima','comissao','lucro','user_id'
+    ];
+
+    protected $casts = [
+        'preco_rs' => 'float',
+        'preco_usd' => 'float',
+        'custo_compra' => 'float',
+        'custo_medio' => 'float',
+        'qtd_minima' => 'float',
+        'comissao' => 'float',
+        'lucro' => 'float',
+        'quantidade' => 'float',
     ];
 
     /**
      * Ajusta quantidade com trava pessimista.
-     * $delta > 0  => devolve (soma)
-     * $delta < 0  => consome (subtrai)
-     * Lança RuntimeException se ficar negativo.
+     * $delta > 0  => adiciona
+     * $delta < 0  => consome
      */
     public static function ajustarQuantidade(int $id, float $delta): void
     {
-    $item = static::lockForUpdate()->findOrFail($id);
-    $novo = (float)$item->qtd + $delta;
+        DB::transaction(function () use ($id, $delta) {
+            /** @var self $item */
+            $item = static::whereKey($id)->lockForUpdate()->firstOrFail();
 
-    if ($novo < 0) {
-        throw new \RuntimeException("Estoque insuficiente para o item #{$id}.");
-    }
+            $novo = (float) $item->quantidade + $delta;
+            if ($novo < 0) {
+                throw new \RuntimeException("Estoque insuficiente para o item #{$id}.");
+            }
 
-    $item->qtd = $novo;
-    $item->save();
+            $item->quantidade = $novo;
+            $item->save();
+        });
     }
 }

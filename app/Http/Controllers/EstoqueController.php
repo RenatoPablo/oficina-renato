@@ -9,16 +9,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rule;
 use Laravel\Ui\Presets\React;
+use Illuminate\Support\Facades\Auth;
 
 class EstoqueController extends Controller
 {
-    private $validaInputRules = [
-        'codigo' => 'nullable|string|max:255',
-        'descricao' => 'required|string|max:255',
-        'quantidade' => 'required|numeric|min:0',
-        'preco_rs' => 'required|min:0',
-        'medida' => 'nullable|string|max:10'
-    ];
+    private function getValidaInputRules(?int $estoqueId = null): array
+    {
+        return [
+            'codigo' => [
+                'nullable','string','max:255',
+                Rule::unique('estoques','codigo')
+                    ->where(fn($q) => $q->where('user_id', Auth::id()))
+                    ->ignore($estoqueId), // <- faz funcionar no edit
+            ],
+            'descricao'  => 'required|string|max:255',
+            'quantidade' => 'required|numeric|min:0',
+            'preco_rs'   => 'required|numeric|min:0',
+            'medida'     => 'nullable|string|max:10',
+        ];
+    }
+
 
     private $validaInputMessages = [
         'descricao.required' => 'O nome é obrigatório.',
@@ -61,7 +71,7 @@ class EstoqueController extends Controller
     public function createSubmit(Request $request)
     {
         $request->validate(
-            $this->validaInputRules,
+            $this->getValidaInputRules(),
             $this->validaInputMessages
         );
 
@@ -99,7 +109,7 @@ class EstoqueController extends Controller
     public function editSubmit(Request $request)
     {
         // validate request
-        $rules = $this->validaInputRules;
+        $rules = $this->getValidaInputRules($request->id);
         $rules['codigo'] = [
             'required',
             'string',

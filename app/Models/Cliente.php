@@ -1,45 +1,36 @@
 <?php
+
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Cliente extends Model
+class Cliente extends TenantModel
 {
-    use SoftDeletes;
+    use SoftDeletes, BelongsToUser;
 
     protected $fillable = [
-        'nome',
-        'contato',
-        'ie_rg',
-        'cnpj_cpf',
-        'endereco',
-        'bairro',
-        'municipio',
-        'uf',
-        'cep',
-        'telefone',
-        'celular',
-        'email', 
-        'observacao',
+        'nome','contato','ie_rg','cnpj_cpf','endereco','bairro','municipio','uf','cep',
+        'telefone','celular','email','observacao','user_id'
     ];
 
-    public function getCnpjCpfFormatadoAttribute()
+    // histórico de vínculos (se usar na UI)
+    public function veiculosVinculos()
     {
-        $valor = preg_replace('/\D/', '', $this->cnpj_cpf);
-
-        if (strlen($valor) === 11) {
-            // CPF
-            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $valor);
-        } elseif (strlen($valor) === 14) {
-            // CNPJ
-            return preg_replace('/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/', '$1.$2.$3/$4-$5', $valor);
-        }
-
-        return $this->cnpj_cpf; // Retorna como está se não for nenhum dos dois
+        return $this->hasMany(ClienteVeiculo::class, 'cliente_id')
+                    ->where('user_id', $this->user_id);
     }
 
-
-
+    // formatador de CPF/CNPJ (ótimo!)
+    public function getCnpjCpfFormatadoAttribute()
+    {
+        $valor = preg_replace('/\D/', '', (string) $this->cnpj_cpf);
+        if (strlen($valor) === 11) {
+            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $valor);
+        } elseif (strlen($valor) === 14) {
+            return preg_replace('/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/', '$1.$2.$3/$4-$5', $valor);
+        }
+        return $this->cnpj_cpf;
+    }
 }
-?>
