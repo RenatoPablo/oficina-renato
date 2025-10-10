@@ -18,13 +18,13 @@ use League\CommonMark\Extension\CommonMark\Parser\Inline\EscapableParser;
 
 //auth routes - user not logged
 Route::middleware([CheckIsNotLogged::class])->group(function () {
-    Route::get('/login', [AuthController::class, 'login']);
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/loginSubmit', [AuthController::class, 'loginSubmit']);
     
 });
 
 //auth routes- user is logged
-Route::middleware([CheckIsLogged::class])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
     //routes for clientes

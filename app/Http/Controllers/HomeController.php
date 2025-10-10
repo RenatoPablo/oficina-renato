@@ -33,6 +33,9 @@ class HomeController extends Controller
 
         $osAbertaCount = OrdemServico::where('situacao', '=', 'aberta')->count();
 
+        // var_dump(Auth::id());
+        // exit;
+
 
         return view('dashboard', compact('ordens', 'estoqueBaixoCount', 'osAtrasadaCount', 'osAbertaCount'));
     }

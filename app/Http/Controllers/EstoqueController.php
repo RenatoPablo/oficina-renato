@@ -24,7 +24,7 @@ class EstoqueController extends Controller
             ],
             'descricao'  => 'required|string|max:255',
             'quantidade' => 'required|numeric|min:0',
-            'preco_rs'   => 'required|numeric|min:0',
+            'preco_rs'   => 'required|min:0',
             'medida'     => 'nullable|string|max:10',
         ];
     }
@@ -48,7 +48,7 @@ class EstoqueController extends Controller
     {
         $search = $request->input('search');
         
-        $estoques = Estoque::query();
+        $estoques = Estoque::query()->where('user_id', Auth::id());
 
         if($search)
         {
@@ -59,6 +59,9 @@ class EstoqueController extends Controller
         }
 
         $estoques = $estoques->orderByDesc('created_at')->paginate(10)->withQueryString();
+
+        // var_dump(Auth::id());
+        // exit;
 
         return view('estoque.index', compact('estoques'));
     }

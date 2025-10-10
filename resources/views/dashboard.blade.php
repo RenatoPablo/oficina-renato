@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card p-4 shadow-sm bg-light">
-                    <h2 class="text-dark">Bem-vindo, <span class="fw-bold">{{ session('user.name') ?? 'Usuário' }}</span></h2>
+                    <h2 class="text-dark">Bem-vindo, <span class="fw-bold">{{ Auth::user()->name ?? 'Usuário' }}</span></h2>
                     <p class="text-muted mb-0">{{ now()->format('d/m/Y H:i') }}</p>
                      
                 </div>

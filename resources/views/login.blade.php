@@ -29,9 +29,9 @@
                 <button type="submit" class="btn btn-primary w-100">Entrar</button>
             </form>
             
-            <div class="text-center mt-3">
+            {{-- <div class="text-center mt-3">
                 <a href="#" class="text-decoration-none">Esqueceu sua senha?</a>
-            </div>
+            </div> --}}
 
             {{-- invalid login --}}
             @if(session('loginError'))

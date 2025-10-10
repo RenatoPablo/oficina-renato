@@ -3,82 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login() 
+    public function login()
     {
+        // Se já estiver logado, manda pra home
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
         return view('login');
     }
 
     public function loginSubmit(Request $request)
     {
-        // form validation 
-        $request->validate(
-            //rules
+        // 1) Validação básica
+        $credentials = $request->validate(
             [
-                'email' => 'required|email',
-                'password' => 'required|min:6|max:16'
+                'email'    => ['required','email'],
+                'password' => ['required','min:6','max:16'],
             ],
-            //error messages
             [
-                'email.required' => 'O username é obrigatório.',
-                'email.email' => 'Username deve ser um email valido.',
-                'password.required' => 'A password é obrigatório',
-                'password.min' => 'A password deve conter pelo menos :min caracteres',
-                'password.max' => 'A password deve ter no máximo :max caracteres',
+                'email.required'    => 'O email é obrigatório.',
+                'email.email'       => 'Informe um email válido.',
+                'password.required' => 'A senha é obrigatória.',
+                'password.min'      => 'A senha deve ter pelo menos :min caracteres.',
+                'password.max'      => 'A senha deve ter no máximo :max caracteres.',
             ]
         );
 
-        //get user input
-        $email = $request->input('email');
-        $password = $request->input('password'); 
+        // (opcional) remember me via checkbox "remember"
+        $remember = (bool) $request->boolean('remember');
 
-
-        //check if user exists
-        $user = User::where('email', $email)->first();
-                      
-        
-        if(!$user)
-        {
-            return redirect()->back()->withInput()->with('loginError', 'Email ou senha incorretos');
+        // 2) Tenta logar pelo guard padrão
+        if (! Auth::attempt($credentials, $remember)) {
+            return back()
+                ->withInput($request->only('email', 'remember'))
+                ->with('loginError', 'Email ou senha incorretos');
         }
 
+        // 3) Regenera o ID da sessão (anti session fixation)
+        $request->session()->regenerate();
 
-        //check if password is correct
-        if(!Hash::check($password, $user->password))
-        {
-            return redirect()->back()->withInput()->with('loginError', 'Email ou senha incorretos');
-        }
-
-        //update last login
-        $user->last_login = date('Y-m-d H:i:s');
+        // 4) Atualiza o last_login
+        /** @var User $user */
+        $user = Auth::user();
+        $user->last_login = now();
         $user->save();
 
-        //login user
-        session([
-            'user' => [
-                'id' => $user->id,
-                'email' => $user->email,
-                'name' => $user->name,
-                'role' => $user->role ?? 'usuario'
-            ]
-        ]);
-
-        //redirect to home
-        return redirect()->to('/');
-        
+        // 5) Redireciona pra home
+        return redirect()->route('dashboard');
     }
 
-    public function logout() 
+    public function logout(Request $request)
     {
-        //logout from application 
-        session()->forget('user');
-        return redirect()->to('/login');
+        Auth::logout();
+
+        // Invalida e regenera token CSRF
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }
-
