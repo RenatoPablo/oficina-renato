@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 // IMPORTA teus middlewares:
 use App\Http\Middleware\BridgeAuthFromSession;
 use App\Http\Middleware\CheckIsLogged; // o seu já existente
+use App\Http\Middleware\CheckIsAdmin;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'bridge-auth'  => BridgeAuthFromSession::class,
             'check-logged' => CheckIsLogged::class,
+            'is_admin' => CheckIsAdmin::class
         ]);
 
         // 2) (OPÇÃO A) Aplicar em TODAS as rotas (global)

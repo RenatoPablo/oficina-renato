@@ -55,6 +55,10 @@ class AuthController extends Controller
         $user->save();
 
         // 5) Redireciona pra home
+        if (Auth::user()->is_admin)
+        {
+            return redirect()->route('admin.dashboard');
+        }
         return redirect()->route('dashboard');
     }
 

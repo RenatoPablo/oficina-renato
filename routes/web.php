@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\admin\HomeController as AdminHomeController;
+use App\Http\Controllers\admin\UsersController as AdminUsersController;
 use App\Http\Middleware\CheckIsNotLogged;
 use App\Http\Middleware\CheckIsLogged;
 use Illuminate\Support\Facades\Route;
@@ -88,3 +90,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/logout', [AuthController::class, 'logout'])->name(('logout'));
 });
+
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/admin', [AdminHomeController::class, 'index'])->name('admin.dashboard');
+
+    Route::get('/admin/users', [AdminUsersController::class, 'index'])->name('admin.users');
+
+    Route::get('/admin/users/create', [AdminUsersController::class, 'create'])->name('admin.users.create');
+}); 
