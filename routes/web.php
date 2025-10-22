@@ -96,5 +96,10 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
     Route::get('/admin/users', [AdminUsersController::class, 'index'])->name('admin.users');
 
-    Route::get('/admin/users/create', [AdminUsersController::class, 'create'])->name('admin.users.create');
+    Route::get('/admin/users/create', [AdminUsersController::class, 'create'])->name('admin.users.create'); 
+    Route::post('admin/users/createSubmit', [AdminUsersController::class, 'createSubmit'])->name('admin.user.create.submit');
+
+    Route::get('/admin/users/{id}/edit', [AdminUsersController::class, 'edit'])->name('admin.users.edit');
+    Route::put('admin/users/editSubmit', [AdminUsersController::class, 'editSubmit'])->name('admin.users.update');
+    Route::delete('/admin/users/{id}/delete', [AdminUsersController::class, 'destroy'])->name('admin.users.destroy');
 }); 

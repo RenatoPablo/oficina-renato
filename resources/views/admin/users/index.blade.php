@@ -53,9 +53,11 @@
                                     </td>
                                     <td class="text-center">
                                         <!-- Botão Editar -->
-                                        {{-- <a href="{{ route('admin.users.edit', ['id' => Crypt::encrypt($user->id)]) }}" class="btn btn-warning btn-sm">
+                                         <a href="{{ route('admin.users.edit', ['id' => Crypt::encrypt($user->id)]) }}" class="btn btn-warning btn-sm">
                                             <i class="bi bi-pencil"></i>
                                         </a>
+
+                                        
                                         <!-- Botão Excluir -->
                                         <form action="{{ route('admin.users.destroy', ['id' => Crypt::encrypt($user->id)]) }}" method="POST" class="d-inline">
                                             @csrf
@@ -63,7 +65,7 @@
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
-                                        </form> --}}
+                                        </form>
                                     </td>
                                 </tr>
                             @empty

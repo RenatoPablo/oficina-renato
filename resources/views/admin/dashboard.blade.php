@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-  <h1>Bem-vindo, {{ session('user.name') }}!</h1>
+  <h1>Bem-vindo, {{ Auth::user()->name ?? 'Usuário' }}!</h1>
   <div class="row mt-4">
     <div class="col-md-3">
       <div class="small-box bg-primary text-white p-3 rounded">

@@ -73,6 +73,9 @@
 
   {{-- Conteúdo principal --}}
   <main class="app-main p-4">
+    <div class="container mt-4">
+      @include('partials.alerts')
+    </div>
     @yield('content')
   </main>
 
