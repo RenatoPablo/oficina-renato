@@ -14,6 +14,7 @@ class VeiculoSeeder extends Seeder
 
         for ($i = 0; $i < 10; $i++) {
             Veiculo::create([
+                'user_id' => '1',
                 'tipo'   => $faker->randomElement(['Carro', 'Moto', 'Caminhão']),
                 'marca'  => $faker->company,
                 'modelo' => $faker->word,

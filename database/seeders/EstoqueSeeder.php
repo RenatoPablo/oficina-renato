@@ -13,7 +13,8 @@ class EstoqueSeeder extends Seeder
      */
     public function run(): void
     {
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40158',
             'descricao' => 'Abraçadeira',
             'quantidade' => '60',
@@ -21,7 +22,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40157',
             'descricao' => 'Oleo 20w50',
             'quantidade' => '60',
@@ -29,7 +31,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Litro'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40159',
             'descricao' => 'Amortecedor',
             'quantidade' => '30',
@@ -37,7 +40,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40160',
             'descricao' => 'Jogo de Junta Motor',
             'quantidade' => '35',
@@ -45,7 +49,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Kit'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40161',
             'descricao' => 'Pistão do motor',
             'quantidade' => '15',
@@ -53,7 +58,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Jogo'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40162',
             'descricao' => 'Filtro de oleo',
             'quantidade' => '60',
@@ -61,7 +67,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40163',
             'descricao' => 'Filtro de Ar',
             'quantidade' => '60',
@@ -69,7 +76,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40164',
             'descricao' => 'Coifa Suspensão',
             'quantidade' => '60',
@@ -77,7 +85,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40165',
             'descricao' => 'Rolamento roda',
             'quantidade' => '60',
@@ -85,7 +94,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40166',
             'descricao' => 'Correia alternador',
             'quantidade' => '60',
@@ -93,7 +103,8 @@ class EstoqueSeeder extends Seeder
             'medida' => 'Unidade'
         ]);
 
-        Estoque::create([
+        Estoque::UpdateOrCreate([
+            'user_id' => '1',
             'codigo' => '40167',
             'descricao' => 'Polia tensionadora',
             'quantidade' => '60',

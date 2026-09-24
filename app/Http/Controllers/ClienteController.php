@@ -111,7 +111,7 @@ class ClienteController extends Controller
         FormHelper::preencherCampoSeTiver($request, 'celular', $cliente);
 
         //email
-        FormHelper::preencherCampoSeTiver($request, 'contato', $cliente);
+        FormHelper::preencherCampoSeTiver($request, 'email', $cliente);
 
         //observacao
         FormHelper::preencherCampoSeTiver($request, 'observacao', $cliente);

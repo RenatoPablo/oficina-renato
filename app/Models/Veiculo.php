@@ -22,20 +22,16 @@ class Veiculo extends TenantModel
     /** Histórico de vínculos (um-para-muitos) — blindado por user_id */
     public function clientesVinculos()
     {
-        return $this->hasMany(ClienteVeiculo::class, 'veiculo_id')
-                    ->where('user_id', $this->user_id);
+        return $this->hasMany(ClienteVeiculo::class, 'veiculo_id');
     }
 
     /** Vínculo ATIVO (um só) + já traz o cliente junto — blindado por user_id */
     public function clienteVinculoAtivo()
     {
         return $this->hasOne(ClienteVeiculo::class, 'veiculo_id')
-                    ->where('user_id', $this->user_id)
                     ->where('ativo', true)
                     ->latest('id')
-                    ->with(['cliente' => function ($q) {
-                        $q->where('user_id', $this->user_id);
-                    }]);
+                    ->with('cliente');
     }
 
     /** Acessor: $veiculo->proprietario_nome */
@@ -47,8 +43,7 @@ class Veiculo extends TenantModel
     /** Relacionamento com OS (se usar) — opcional */
     public function ordensServico()
     {
-        return $this->hasMany(OrdemServico::class, 'veiculo_id')
-                    ->where('user_id', $this->user_id);
+        return $this->hasMany(OrdemServico::class, 'veiculo_id');
     }
 
     /** Setter da placa (aceita padrão antigo ABC-1234 e Mercosul ABC1D23) */

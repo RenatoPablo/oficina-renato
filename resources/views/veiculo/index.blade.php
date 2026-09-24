@@ -48,6 +48,8 @@
                     </div>
                 </form>
 
+                
+
                 {{-- Tabela --}}
                 <div class="table-wrap">
                     <table class="table table-hover table-striped align-middle table-padrao">

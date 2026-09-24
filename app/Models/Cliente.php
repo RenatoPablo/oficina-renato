@@ -18,8 +18,7 @@ class Cliente extends TenantModel
     // histórico de vínculos (se usar na UI)
     public function veiculosVinculos()
     {
-        return $this->hasMany(ClienteVeiculo::class, 'cliente_id')
-                    ->where('user_id', $this->user_id);
+        return $this->hasMany(ClienteVeiculo::class, 'cliente_id');
     }
 
     // formatador de CPF/CNPJ (ótimo!)

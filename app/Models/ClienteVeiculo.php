@@ -16,13 +16,11 @@ class ClienteVeiculo extends TenantModel
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id')
-                    ->where('user_id', $this->user_id);
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
     public function veiculo()
     {
-        return $this->belongsTo(Veiculo::class, 'veiculo_id')
-                    ->where('user_id', $this->user_id);
+        return $this->belongsTo(Veiculo::class, 'veiculo_id');
     }
 }
