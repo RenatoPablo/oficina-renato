@@ -1,4 +1,4 @@
-# Oficina Renato
+# Oficina Mecânica
 
 Sistema web desenvolvido para gerenciamento de uma oficina mecânica.
 
