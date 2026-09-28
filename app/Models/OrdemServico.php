@@ -22,34 +22,29 @@ class OrdemServico extends TenantModel
     public function veiculo()
     {
         return $this->belongsTo(Veiculo::class, 'veiculo_id')
-                    ->withTrashed()                 // ✅ traz mesmo se tiver deleted_at
-                    ->where('user_id', $this->user_id);
+                    ->withTrashed();
     }
 
     public function servicosItens()
     {
-        return $this->hasMany(ServicoOrdem::class, 'ordem_servico_id')
-                    ->where('user_id', $this->user_id);
+        return $this->hasMany(ServicoOrdem::class, 'ordem_servico_id');
     }
 
     public function pecasItens()
     {
-        return $this->hasMany(PecaOrdem::class, 'ordem_servico_id')
-                    ->where('user_id', $this->user_id);
+        return $this->hasMany(PecaOrdem::class, 'ordem_servico_id');
     }
 
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'cliente_id')
-                    ->withTrashed()                 // idem se você deletar clientes
-                    ->where('user_id', $this->user_id);
+                    ->withTrashed();
     }
 
     public function clienteVeiculo()
     {
         return $this->belongsTo(ClienteVeiculo::class, 'cliente_veiculo_id')
-                    ->withTrashed()
-                    ->where('user_id', $this->user_id);
+                    ->withTrashed();
     }
 
     public function recalcTotais(): void

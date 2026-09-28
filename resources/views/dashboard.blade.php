@@ -56,6 +56,7 @@
                                     <th>Veículo</th>
                                     <th>Situação</th>
                                     <th>Data</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,6 +90,11 @@
                                     </td>
                                     <td><span class="badge bg-info">{{ $ordem->situacao }}</span></td>
                                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($ordem->data_chamado)->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <a class="btn btn-outline-primary" href="{{ route('ordem.show', Crypt::encrypt($ordem->id)) }}" title="Ver">
+                                          <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                        
