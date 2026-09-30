@@ -15,8 +15,8 @@ class UsersController extends Controller
     private $inputValidaRules = [
         'name' => 'required|string|max:100',
         'email' => 'required|email',
-        'password' => 'required|string',
-        'verifyPassword' => 'required|string',
+        'password' => 'required|string|min:6',
+        'verifyPassword' => 'required|string|same:password',
     ];
 
     private $inputValidaMessage = [
@@ -24,7 +24,9 @@ class UsersController extends Controller
         'name.max' => 'Digite ate :max caracteres.',
         'email.required' => 'O email é obrigatório.',
         'password.required' => 'A senha é obrigatória.',
-        'verifyPassword' => 'É obrigatório confirmar a senha.' 
+        'password.min' => 'A senha deve ter pelo menos :min caracteres.',
+        'verifyPassword.required' => 'É obrigatório confirmar a senha.',
+        'verifyPassword.same' => 'As senhas não coincidem.',
     ];
 
 
@@ -66,12 +68,7 @@ class UsersController extends Controller
 
         $users->email = $request->email;
 
-        if ($request->password === $request->verifyPassword)
-        {
-            $hashPassword = Hash::make($request->password);
-        }
-
-        $users->password = $hashPassword;
+        $users->password = Hash::make($request->password);
 
         $users->is_admin = (int) $request->permissao;
 
@@ -98,7 +95,9 @@ class UsersController extends Controller
     {
         $inputValidaRulesEdit = [
             'name' => 'required|string|max:100',
-            'email' => 'required|email',            
+            'email' => 'required|email',
+            'password' => 'nullable|string|min:6|required_with:verifyPassword',
+            'verifyPassword' => 'nullable|string|required_with:password|same:password',
         ];
 
         $request->validate(
@@ -112,14 +111,9 @@ class UsersController extends Controller
 
         $user->email = $request->email;
 
-        if ($request->password === $request->verifyPassword)
-        {
-            $passwordHash = Hash::make($request->password);
-        } else {
-            return redirect()->route('admin.users.edit', $user->id)->with('error', 'Senhas não coincidem.');
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
         }
-
-        $user->password = $passwordHash;
 
         $user->is_admin = (int) $request->permissao;
 

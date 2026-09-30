@@ -41,6 +41,7 @@
                        class="form-control"
                        placeholder="Nova senha">
             </div>
+            <small class="text-muted">Deixe em branco para manter a senha atual.</small>
         </div>
 
         <!-- Confirmar senha -->

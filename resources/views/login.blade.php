@@ -10,15 +10,15 @@
                     <label for="email" class="form-label">Email</label>
                     <input name="email" type="email" class="form-control" id="email" placeholder="Digite seu email" value="{{ old('email') }}">
                     {{-- show error --}}
-                    @error('text_username')
+                    @error('email')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Senha</label>
-                    <input name="password" type="password" class="form-control" id="password" placeholder="Digite sua senha" value="{{ old('password') }}">
+                    <input name="password" type="password" class="form-control" id="password" placeholder="Digite sua senha">
                     {{-- show error --}}
-                    @error('text_username')
+                    @error('password')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>

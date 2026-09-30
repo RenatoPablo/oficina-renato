@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -24,14 +23,12 @@ class AuthController extends Controller
         $credentials = $request->validate(
             [
                 'email'    => ['required','email'],
-                'password' => ['required','min:6','max:16'],
+                'password' => ['required', 'string'],
             ],
             [
                 'email.required'    => 'O email é obrigatório.',
                 'email.email'       => 'Informe um email válido.',
                 'password.required' => 'A senha é obrigatória.',
-                'password.min'      => 'A senha deve ter pelo menos :min caracteres.',
-                'password.max'      => 'A senha deve ter no máximo :max caracteres.',
             ]
         );
 
