@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Painel - Oficina Renato')</title>
 
   {{-- Bootstrap e AdminLTE (sem Vite) --}}
@@ -18,11 +19,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/tables.css') }}">
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
 
-  {{-- 🔥 Print global: aplica em TODAS as páginas quando for imprimir --}}
-    <link rel="stylesheet" href="{{ asset('assets/css/print.css') }}" media="print">
-
-    {{-- 🔥 Agora o stack funciona para CSS inline por página --}}
-    @stack('styles')
+  @include('partials.layout-styles')
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -31,6 +28,7 @@
   {{-- Navbar --}}
   <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
+      <button type="button" class="btn btn-light" data-lte-toggle="sidebar" aria-label="Abrir ou fechar menu"><i class="bi bi-list"></i></button>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <span class="nav-link">👤 {{ Auth::user()->name ?? 'Usuário' }}</span>
@@ -67,6 +65,9 @@
         <li class="nav-item">
           <a href="{{ route('ordem.index') }}" class="nav-link text-white">🧾 Ordens</a>
         </li>
+        <li class="nav-item">
+          <a href="{{ route('servico.index') }}" class="nav-link text-white">🔧 Serviços</a>
+        </li>
       </ul>
     </nav>
   </aside>
@@ -82,14 +83,10 @@
 </div>
 
 {{-- Scripts JS --}}
-<script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('vendor/popper/popper.min.js') }}"></script>
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
 
-<script src="{{ asset('assets/js/alerts.js') }}"></script>
-<script src="{{ asset('assets/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('assets/js/app.js') }}"></script>
-<script src="{{ asset('assets/js/masks.js') }}"></script>
+@include('partials.layout-scripts')
 
 </body>
 </html>

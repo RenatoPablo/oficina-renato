@@ -24,7 +24,7 @@ body * {
 }
 
 /* Mata layout de navegação */
-header, footer, nav, .navbar, #sidebar, .sidebar, .topbar, .app-header, .app-navbar,
+header, footer, nav, .navbar, #sidebar, .sidebar, .app-sidebar, .topbar, .app-header, .app-navbar,
 .breadcrumb, .pagination, .no-print, .btn, .btn-group, .dropdown,
 .card-header, .card-header .btn, .card-header .badge {
   display: none !important;
@@ -84,4 +84,3 @@ body {
   thead { display: table-header-group !important; }
   tr, td, th { page-break-inside: avoid !important; break-inside: avoid !important; }
 }
- 
