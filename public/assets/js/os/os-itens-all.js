@@ -4,6 +4,31 @@
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
+  const avisoEstoque = $('#aviso-estoque');
+  const saldoConsultado = new Map();
+  $$('#peca_master option').forEach(opt => saldoConsultado.set(opt.value, Number(opt.dataset.estoque) || 0));
+  $$('#tbl-pecas [data-estoque-original]').forEach(el => {
+    const id = el.dataset.estoqueOriginal;
+    saldoConsultado.set(id, (saldoConsultado.get(id) || 0) + Number(el.dataset.descontada || 0));
+  });
+  function atualizarAvisoEstoque() {
+    if (!avisoEstoque) return;
+    const demanda = new Map();
+    $$('#tbl-pecas tbody tr').forEach(tr => {
+      const id = tr.querySelector('select')?.value;
+      const qtd = Number(tr.querySelector('[name$="[qtd]"]')?.value) || 0;
+      demanda.set(id, (demanda.get(id) || 0) + qtd);
+    });
+    avisoEstoque.hidden = !Array.from(demanda).some(([id, qtd]) => qtd > (saldoConsultado.get(id) || 0));
+  }
+  const corpoPecas = $('#tbl-pecas tbody');
+  if (corpoPecas) {
+    new MutationObserver(atualizarAvisoEstoque).observe(corpoPecas, { childList: true });
+    corpoPecas.addEventListener('input', atualizarAvisoEstoque);
+    corpoPecas.addEventListener('change', atualizarAvisoEstoque);
+    atualizarAvisoEstoque();
+  }
+
   const toNumber = (str) => {
     if (str == null) return 0;
     let s = String(str).replace(/[^\d,\.]/g, '');

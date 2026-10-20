@@ -79,7 +79,12 @@
 </div>
 
 {{-- ======= PEÇAS / ESTOQUE ======= --}}
+@if($os->situacao !== 'Cancelada' && $os->pecasItens->contains(fn($item) => (float)$item->qtd_descontada < (float)$item->qtd))
+  <div class="alert alert-info" role="status">Há peças utilizadas além do estoque cadastrado. A cobrança considera toda a quantidade da OS; somente o estoque disponível foi descontado.</div>
+@endif
+<div class="small text-muted mb-2">Peças podem ser utilizadas mesmo sem estoque suficiente. O saldo será mantido em zero e a cobrança será integral.</div>
 <div class="card mb-2 border-0 pecas-section">
+  <div id="aviso-estoque" class="alert alert-info mb-0" role="status" hidden>Quantidade superior ao estoque cadastrado. Você pode salvar e cobrar normalmente; o estoque será descontado somente até zero.</div>
   <div class="card-header bg-light d-flex align-items-center flex-nowrap">
     <div class="fw-semibold me-3">Peças / Estoque</div>
 
@@ -87,8 +92,8 @@
       <select id="sel-peca" class="form-select">
         <option value="">-- Selecionar peça --</option>
         @foreach($estoques as $p)
-          <option value="{{ $p->id }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">
-            {{ $p->descricao }}
+          <option value="{{ $p->id }}" data-estoque="{{ $p->quantidade }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">
+            {{ $p->descricao }} (estoque: {{ $p->quantidade }})
           </option>
         @endforeach
       </select>
@@ -112,13 +117,13 @@
           @foreach($os->pecasItens as $j => $item)
             <tr>
               <td>
-                <input type="hidden" name="pecas[{{ $j }}][id]" value="{{ $item->id }}">
+                <input data-estoque-original="{{ $item->estoque_id }}" data-descontada="{{ $item->qtd_descontada }}" type="hidden" name="pecas[{{ $j }}][id]" value="{{ $item->id }}">
                 <select name="pecas[{{ $j }}][estoque_id]" class="form-select">
                   @foreach($estoques as $p)
                     <option value="{{ $p->id }}"
-                            data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}"
+                            data-estoque="{{ $p->quantidade }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}"
                             @selected($item->estoque_id == $p->id)>
-                      {{ $p->descricao }}
+                      {{ $p->descricao }} (estoque: {{ $p->quantidade }})
                     </option>
                   @endforeach
                 </select>
@@ -169,8 +174,8 @@
 
 <select id="peca_master" class="d-none">
   @foreach($estoques as $p)
-    <option value="{{ $p->id }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">
-      {{ $p->descricao }}
+    <option value="{{ $p->id }}" data-estoque="{{ $p->quantidade }}" data-preco="{{ number_format($p->preco_rs ?? 0, 2, '.', '') }}">
+      {{ $p->descricao }} (estoque: {{ $p->quantidade }})
     </option>
   @endforeach
 </select>

@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="{{ asset('assets/css/tables.css') }}">
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png">
 
+  <link rel="icon" type="image/png" href="{{ asset('images/favicon-oficina.png') }}">
+
   @include('partials.layout-styles')
 </head>
 

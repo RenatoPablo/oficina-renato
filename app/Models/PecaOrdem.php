@@ -3,29 +3,30 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToUser;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PecaOrdem extends TenantModel
 {
-    use SoftDeletes;
     use BelongsToUser;
-    
+    use SoftDeletes;
+
     protected $table = 'pecas_ordem';
 
     protected $fillable = [
         'ordem_servico_id',
         'estoque_id',
         'qtd',
+        'qtd_descontada',
         'valor_unit',
         'valor_total',
         'codigo_cor',
-        'user_id'
+        'user_id',
     ];
 
     protected $casts = [
-        'qtd'         => 'decimal:5',
-        'valor_unit'  => 'decimal:5',
+        'qtd_descontada' => 'decimal:2',
+        'qtd' => 'decimal:5',
+        'valor_unit' => 'decimal:5',
         'valor_total' => 'decimal:2',
     ];
 
@@ -44,8 +45,8 @@ class PecaOrdem extends TenantModel
     protected static function booted()
     {
         static::saving(function (self $model) {
-            $q = (float)($model->qtd ?? 0);
-            $u = (float)($model->valor_unit ?? 0);
+            $q = (float) ($model->qtd ?? 0);
+            $u = (float) ($model->valor_unit ?? 0);
             $model->valor_total = $q * $u;
         });
 
