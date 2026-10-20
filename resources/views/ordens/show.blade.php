@@ -113,11 +113,7 @@
               <div>Celular: (17) 99722-9613</div>
             </div>
           </div>
-          <div class="os-document-meta">
-            <div class="os-document-label">ORDEM DE SERVIÇO</div>
-            <div class="os-document-number">Nº {{ $os->id }}</div>
-            <div class="os-document-status">{{ $os->situacao }}</div>
-          </div>
+          <div class="os-document-number">OS Nº {{ $os->id }}</div>
         </div>
         <div class="os-document-dates avoid-break">
           <span><strong>Emissão:</strong> {{ \Carbon\Carbon::parse($os->data_chamado)->format('d/m/Y H:i') }}</span>
@@ -436,30 +432,31 @@
 <style>
 .only-print { display: none; }
 .avoid-break { break-inside: avoid; page-break-inside: avoid; }
-.os-document-header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
+.os-document-header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
+.os-document-number { font-size:22px; font-weight:800; color:#122b53; white-space:nowrap; }
 .os-brand { display:flex; align-items:center; gap:16px; min-width:0; }
 .os-brand-logo { width:165px; max-height:105px; object-fit:contain; flex-shrink:0; }
 .os-brand-details { color:#526074; font-size:12px; line-height:1.65; }
 .os-brand-name { font-size:16px; font-weight:800; color:#122b53; letter-spacing:.3px; }
-.os-document-meta { text-align:right; flex-shrink:0; }
-.os-document-label { font-size:11px; font-weight:700; color:#526074; letter-spacing:1px; }
-.os-document-number { font-size:25px; font-weight:800; color:#122b53; }
-.os-document-status { display:inline-block; padding:3px 9px; background:#e4ebf5; border-radius:20px; color:#233c61; font-size:11px; font-weight:600; }
 .os-document-dates { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; border:1px solid #dce6f2; border-top:0; border-radius:0 0 10px 10px; padding:10px 18px; margin-bottom:20px; font-size:12px; color:#526074; }
-@media (max-width:700px) { .os-document-header { flex-wrap:wrap; } .os-brand-logo { width:110px; } .os-document-meta { text-align:left; } }
+@media screen and (max-width:700px) { .os-brand { flex-wrap:wrap; justify-content:center; } .os-brand-logo { width:110px; } }
 @media print {
+  /* Cabeçalhos/rodapés automáticos devem ser desativados no diálogo do navegador. */
   @page { size:A4; margin:12mm; }
   body * { visibility:hidden !important; }
   #print-scope, #print-scope * { visibility:visible !important; }
   #print-scope { position:static !important; width:auto !important; margin:0 !important; padding:0 !important; }
-  header, footer, nav, .navbar, .topbar, .app-header, .app-navbar, .sidebar, .offcanvas,
+  header, footer, nav, .navbar, .topbar, .app-header, .app-navbar, .sidebar, .app-sidebar, .offcanvas,
   .breadcrumb, .pagination, .btn, .btn-group, .dropdown, .no-print, .card-header { display:none !important; }
   body { background:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .app-wrapper { display:block !important; }
+  .app-main { margin:0 !important; padding:0 !important; min-height:0 !important; }
+  .container { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; }
+  .card-body { padding:0 !important; }
   .card, .border, .shadow, .shadow-sm { box-shadow:none !important; }
   .os-document-header { background:#fff !important; padding:8px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
   .os-brand-logo { width:145px; max-height:90px; }
   .os-document-dates { padding:8px 0; border:0; border-radius:0; }
-  .os-document-number { font-size:22px; }
   .table-wrap, .table-responsive { overflow:visible !important; max-height:none !important; height:auto !important; }
   #print-scope table { display:table !important; width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
   #print-scope thead { display:table-header-group !important; }
