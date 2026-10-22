@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Mecânica Renato</title>
+
+    <link rel="stylesheet" href="http://localhost/assets/bootstrap/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://localhost/assets/css/app.css">
+    <link rel="stylesheet" href="http://localhost/assets/css/tables.css">
+    <link rel="shortcut icon" href="http://localhost/assets/images/favicon.png" type="image/png">
+
+    
+    <link rel="icon" type="image/png" href="http://localhost/images/favicon-oficina.png">
+
+
+    <link rel="stylesheet" href="http://localhost/assets/css/print.css" media="print">
+
+    
+    <style>
+.only-print { display: none; }
+.avoid-break { break-inside: avoid; page-break-inside: avoid; }
+.os-document-header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
+.os-brand { display:flex; align-items:center; gap:16px; min-width:0; }
+.os-brand-logo { width:165px; max-height:105px; object-fit:contain; flex-shrink:0; }
+.os-brand-details { color:#526074; font-size:12px; line-height:1.65; }
+.os-brand-name { font-size:16px; font-weight:800; color:#122b53; letter-spacing:.3px; }
+.os-document-meta { text-align:right; flex-shrink:0; }
+.os-document-label { font-size:11px; font-weight:700; color:#526074; letter-spacing:1px; }
+.os-document-number { font-size:25px; font-weight:800; color:#122b53; }
+.os-document-status { display:inline-block; padding:3px 9px; background:#e4ebf5; border-radius:20px; color:#233c61; font-size:11px; font-weight:600; }
+.os-document-dates { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; border:1px solid #dce6f2; border-top:0; border-radius:0 0 10px 10px; padding:10px 18px; margin-bottom:20px; font-size:12px; color:#526074; }
+@media (max-width:700px) { .os-document-header { flex-wrap:wrap; } .os-brand-logo { width:110px; } .os-document-meta { text-align:left; } }
+@media print {
+  @page { size:A4; margin:8mm; }
+  body * { visibility:hidden !important; }
+  #print-scope, #print-scope * { visibility:visible !important; }
+  #print-scope { position:static !important; width:auto !important; margin:0 !important; padding:0 !important; }
+  header, footer, nav, .navbar, .topbar, .app-header, .app-navbar, .sidebar, .offcanvas,
+  .breadcrumb, .pagination, .btn, .btn-group, .dropdown, .no-print, .card-header { display:none !important; }
+  body { background:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  /* Remove o espaço do painel e usa somente as margens A4 definidas acima. */
+  .app-wrapper, body > .d-flex { display:block !important; }
+  /* Elementos ocultos fora da nota não devem reservar altura no papel. */
+  body *:not(:has(#print-scope)):not(#print-scope):not(#print-scope *) { display:none !important; }
+  .app-main { margin:0 !important; padding:0 !important; min-height:0 !important; }
+  .container { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; }
+  .card { display:block !important; border:0 !important; }
+  .card-body { padding:0 !important; }
+  #print-scope { font-size:9pt; line-height:1.15; }
+  /* O breakpoint de tela não deve empilhar os blocos na folha A4. */
+  #print-scope .row.g-3 { display:table !important; table-layout:fixed; width:100%; margin:0 !important; border-spacing:0; }
+  #print-scope .row.g-3 > .col-md-4,
+  #print-scope .row.g-3 > .col-md-6 { display:table-cell !important; float:none !important; vertical-align:top; padding:0 !important; margin:0 !important; }
+  #print-scope .row.g-3 > .col-md-4 { width:33.333333% !important; }
+  #print-scope .row.g-3 > .col-md-6 { width:50% !important; }
+  #print-scope .h-100 { height:auto !important; min-height:0 !important; }
+  #print-scope .os-totals { display:block !important; margin:0 !important; break-inside:avoid; page-break-inside:avoid; }
+  #print-scope .os-totals > .col-12 { width:100% !important; padding:0 !important; }
+  #print-scope .mb-4, #print-scope .mb-2, #print-scope .mb-1 { margin-bottom:0 !important; }
+  #print-scope .p-3 { padding:4px 6px !important; }
+  #print-scope .my-2 { margin-top:3px !important; margin-bottom:3px !important; }
+  #print-scope .border { border-radius:0 !important; }
+  #print-scope h5 { margin:3px 0 0 !important; font-size:10pt; break-after:avoid; page-break-after:avoid; }
+  #print-scope .fs-5 { font-size:10pt !important; }
+  #print-scope th, #print-scope td { padding:2px 5px !important; font-size:9pt !important; line-height:1.15 !important; }
+  /* As tabelas podem continuar na próxima folha, mantendo cada item inteiro. */
+  #print-scope .table-wrap, #print-scope table, #print-scope tbody { break-inside:auto; page-break-inside:auto; }
+  #print-scope .table { margin-bottom:0 !important; }
+  .card, .border, .shadow, .shadow-sm { box-shadow:none !important; }
+  .os-document-header { flex-wrap:nowrap; background:#fff !important; padding:2px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
+  .os-brand-logo { width:100px; max-height:60px; }
+  .os-brand { gap:8px; }
+  .os-brand-details { font-size:9px; line-height:1.2; }
+  .os-brand-name { font-size:12px; }
+  .os-document-dates { padding:2px 0; margin-bottom:0; gap:2px 12px; font-size:9px; border:0; border-radius:0; }
+  .os-document-number { font-size:18px; }
+  .os-document-label, .os-document-status { font-size:9px; }
+  .os-document-status { padding:1px 5px; }
+  .table-wrap, .table-responsive { overflow:visible !important; max-height:none !important; height:auto !important; }
+  #print-scope table { display:table !important; width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
+  #print-scope thead { display:table-header-group !important; }
+  #print-scope tbody { display:table-row-group !important; }
+  #print-scope tr { display:table-row !important; break-inside:avoid !important; }
+  #print-scope td, #print-scope th { display:table-cell !important; white-space:normal !important; }
+  .avoid-break { break-inside:avoid !important; page-break-inside:avoid !important; }
+}
+</style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar p-3">
+            <h4 class="text-center mb-3">Oficina</h4>
+            <a href="http://localhost/clientes"><i class="bi bi-people"></i> Clientes</a>
+            <a href="http://localhost/veiculos"><i class="bi bi-truck"></i> Veículos</a>
+            <a href="http://localhost/ordem"><i class="bi bi-card-checklist"></i> Ordens de Serviço</a>
+            <a href="http://localhost/estoque"><i class="bi bi-box"></i> Estoque</a>
+            <a href="http://localhost/servicos"><i class="bi bi-tools"></i> Serviços</a>
+            <a href="http://localhost/logout"><i class="bi bi-box-arrow-right"></i> Sair</a>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="flex-grow-1">
+            <nav class="navbar navbar-light px-3 d-flex align-items-center">
+                <span class="hamburger" id="hamburger">
+                    <i class="bi bi-list"></i>
+                </span>
+                <span class="ms-3 fw-bold">Painel da Oficina</span>
+                <a href="http://localhost" class="btn btn-light btn-sm me-2" title="Ir para Home">
+                    <i class="bi bi-house-door"></i>
+                </a>
+            </nav>
+
+            <div class="container mt-4">
+                                
+<div class="container mt-4">
+
+
+
+  
+
+  <div class="card shadow-sm border-0">
+
+    
+
+    <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+
+      <span><i class="bi bi-receipt"></i> Ordem de Serviço #3</span>
+
+
+
+      
+
+      <div class="d-flex align-items-center gap-2 no-print">
+
+        
+
+
+        <span class="badge rounded-pill text-bg-secondary">Finalizada</span>
+
+
+
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="window.print()">
+
+          <i class="bi bi-printer"></i>Imprimir
+        </button>
+
+
+
+        <a href="javascript:history.back()" class="btn btn-light btn-sm">
+
+          <i class="bi bi-arrow-left"></i> Voltar
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+
+      
+
+      <div class="d-flex justify-content-between flex-wrap mb-3 no-print">
+
+        <h4 class="mb-2">Resumo da OS</h4>
+
+        <div class="text-muted small">
+
+          Criada em:
+
+          22/10/2026 10:00
+
+          
+        </div>
+
+      </div>
+
+
+
+      
+
+      <div id="print-scope">
+
+
+
+        
+        
+        <div class="os-document-header avoid-break">
+          <div class="os-brand">
+            <img src="http://localhost/images/logo-oficina.png" alt="Logo Auto Mecânica Renato" class="os-brand-logo">
+            <div class="os-brand-details">
+              <div class="os-brand-name">AUTO MECÂNICA RENATO</div>
+              <div>Av. Mangará, 150 · Jd. Paulista</div>
+              <div>Santa Fé do Sul - SP · CEP 15777-080</div>
+              <div>Telefone: (17) 3641-1541</div>
+              <div>Celular: (17) 99722-9613</div>
+            </div>
+          </div>
+          <div class="os-document-meta">
+            <div class="os-document-label">ORDEM DE SERVIÇO</div>
+            <div class="os-document-number">Nº 3</div>
+            <div class="os-document-status">Finalizada</div>
+          </div>
+        </div>
+        <div class="os-document-dates avoid-break">
+          <span><strong>Emissão:</strong> 22/10/2026 10:00</span>
+                  </div>
+
+        
+
+        <div class="row g-3 mb-4">
+
+          <div class="col-md-4">
+
+            <div class="border rounded p-3 h-100 avoid-break">
+
+              <div class="fw-semibold mb-2"><i class="bi bi-person"></i> Cliente</div>
+
+              
+
+
+              <div>Cliente de teste</div>
+
+              
+            </div>
+
+          </div>
+
+
+
+          <div class="col-md-4">
+
+            <div class="border rounded p-3 h-100 avoid-break">
+
+              <div class="fw-semibold mb-2"><i class="bi bi-car-front"></i> Veículo</div>
+
+              <div class="text-uppercase fw-semibold">ABC-1234</div>
+
+              <div class="text-muted small">
+
+                Volkswagen Gol
+
+                 · 2010 
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="col-md-4">
+
+            <div class="border rounded p-3 h-100 avoid-break">
+
+              <div class="fw-semibold mb-2"><i class="bi bi-gear"></i> Dados</div>
+
+              <div>Tipo de atendimento: <span class="text-muted">—</span></div>
+
+              <div>Atendente: <span class="text-muted">—</span></div>
+
+              <div>Revisão até: <span class="text-muted">—</span></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        
+
+        <div class="row g-3 mb-4">
+
+          <div class="col-md-6">
+
+            <div class="border rounded p-3 h-100 avoid-break">
+
+              <div class="fw-semibold mb-2"><i class="bi bi-exclamation-triangle"></i> Problema reclamado</div>
+
+              <div class="text-muted" style="white-space: pre-wrap;">Barulho na direção</div>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+
+            <div class="border rounded p-3 h-100 avoid-break">
+
+              <div class="fw-semibold mb-2"><i class="bi bi-journal-text"></i> Observações</div>
+
+              <div class="text-muted" style="white-space: pre-wrap;">—</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        
+
+        <h5 class="mb-2">Serviços</h5>
+
+        <div class="table-wrap mb-4">
+
+          <table class="table table-hover align-middle table-padrao print-table">
+
+              <colgroup>
+
+                <col style="width:60%">  
+
+                <col style="width:10%">  
+
+                <col style="width:15%">  
+
+                <col style="width:15%">  
+
+              </colgroup>
+
+            <thead class="table-dark">
+
+              <tr>
+
+                <th>Serviço</th>
+
+                <th class="text-end">Qtd</th>
+
+                <th class="text-end">Vlr Unit</th>
+
+                <th class="text-end">Total</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              
+                <tr>
+
+                  <td>Serviço de mão de obra</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">300,00</td>
+
+                  <td class="text-end fw-semibold">300,00</td>
+
+                </tr>
+
+              
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+
+        
+
+        <h5 class="mb-2">Peças</h5>
+
+        <div class="table-wrap mb-4">
+
+          <table class="table table-hover align-middle table-padrao print-table">
+
+              <colgroup>
+
+                <col style="width:60%">  
+
+                <col style="width:10%">  
+
+                <col style="width:15%">  
+
+                <col style="width:15%">  
+
+              </colgroup>
+
+            <thead class="table-dark">
+
+              <tr>
+
+                <th>Peça</th>
+
+                <th class="text-end">Qtd</th>
+
+                <th class="text-end">Vlr Unit</th>
+
+                <th class="text-end">Total</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+                <tr>
+
+                  <td>Flexível de freio</td>
+
+                  <td class="text-end">1</td>
+
+                  <td class="text-end">660,00</td>
+
+                  <td class="text-end fw-semibold">660,00</td>
+
+                </tr>
+
+              
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+
+        
+
+        <div class="row os-totals">
+
+          <div class="col-12">
+
+            <div class="border rounded p-3 w-100 avoid-break">
+
+              <div class="d-flex justify-content-between mb-1">
+
+                <span class="text-muted">Subtotal Serviços</span>
+
+                <strong>300,00</strong>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-1">
+
+                <span class="text-muted">Subtotal Peças</span>
+
+                <strong>730,00</strong>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-1">
+
+                <span class="text-muted">Frete</span>
+
+                <strong>0,00</strong>
+
+              </div>
+
+              <hr class="my-2">
+
+              <div class="d-flex justify-content-between fs-5">
+
+                <span>Total da OS</span>
+
+                <strong>1.030,00</strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="http://localhost/assets/js/alerts.js"></script>
+    <script src="http://localhost/assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="http://localhost/assets/js/app.js"></script>
+    <script src="http://localhost/assets/js/masks.js"></script>
+    <script src="http://localhost/assets/js/maskPlaca.js"></script>
+    <script src="http://localhost/assets/js/os/os-itens-all.js"></script>
+    <script src="http://localhost/assets/js/input_valor.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cepInput = document.getElementById('cep');
+            if (!cepInput) return;
+
+            cepInput.addEventListener('input', function () {
+                let cep = this.value.replace(/\D/g, '').slice(0, 8);
+
+                if (cep.length > 5) {
+                    cep = cep.replace(/^(\d{5})(\d{1,3})$/, '$1-$2');
+                }
+
+                this.value = cep;
+            });
+
+            cepInput.addEventListener('blur', async function () {
+                const cep = this.value.replace(/\D/g, '');
+
+                if (cep.length !== 8) {
+                    this.classList.add('is-invalid');
+                    return;
+                }
+
+                this.classList.remove('is-invalid');
+
+                try {
+                    const response = await fetch(
+                        `https://viacep.com.br/ws/${cep}/json/`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('Erro ao consultar o CEP');
+                    }
+
+                    const dados = await response.json();
+
+                    if (dados.erro) {
+                        alert('CEP não encontrado.');
+                        this.classList.add('is-invalid');
+                        return;
+                    }
+
+                    document.getElementById('endereco').value =
+                        dados.logradouro ?? '';
+
+                    document.getElementById('bairro').value =
+                        dados.bairro ?? '';
+
+                    document.getElementById('municipio').value =
+                        dados.localidade ?? '';
+
+                    document.getElementById('uf').value =
+                        dados.uf ?? '';
+                } catch (error) {
+                    console.error(error);
+                    alert('Não foi possível consultar o CEP.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

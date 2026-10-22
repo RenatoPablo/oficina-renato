@@ -1,0 +1,7 @@
+const {chromium}=require('C:/Users/renat/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('fs');const path=require('path');
+(async()=>{ const browser=await chromium.launch({headless:true,channel:'msedge'}); const page=await browser.newPage({viewport:{width:1000,height:1000}});
+await page.route('**/*',async r=>{const u=new URL(r.request().url());const f=path.resolve('public','.'+u.pathname);if(f.startsWith(path.resolve('public')+path.sep)&&fs.existsSync(f)&&fs.statSync(f).isFile())await r.fulfill({path:f});else await r.abort();});
+await page.setContent(fs.readFileSync('.tmp-print-check/nota.html','utf8'),{waitUntil:'load'});await page.emulateMedia({media:'print'});
+console.log(await page.locator('#print-scope').evaluate(el=>({height:el.getBoundingClientRect().height,font:getComputedStyle(el).fontSize,columns:Array.from(el.querySelectorAll('.col-md-4')).map(c=>({display:getComputedStyle(c).display,width:c.getBoundingClientRect().width})),css:Array.from(document.styleSheets).map(s=>s.href||'inline')})));
+await page.pdf({path:'.tmp-print-check/nota.pdf',preferCSSPageSize:true,printBackground:true}); await page.screenshot({path:'.tmp-print-check/nota.png',fullPage:true});await browser.close();})();

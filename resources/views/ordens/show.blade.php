@@ -113,7 +113,11 @@
               <div>Celular: (17) 99722-9613</div>
             </div>
           </div>
-          <div class="os-document-number">OS Nº {{ $os->id }}</div>
+          <div class="os-document-meta">
+            <div class="os-document-label">ORDEM DE SERVIÇO</div>
+            <div class="os-document-number">Nº {{ $os->id }}</div>
+            <div class="os-document-status">{{ $os->situacao }}</div>
+          </div>
         </div>
         <div class="os-document-dates avoid-break">
           <span><strong>Emissão:</strong> {{ \Carbon\Carbon::parse($os->data_chamado)->format('d/m/Y H:i') }}</span>
@@ -366,7 +370,7 @@
 
         {{-- Totais --}}
 
-        <div class="row">
+        <div class="row os-totals">
 
           <div class="col-12">
 
@@ -432,31 +436,63 @@
 <style>
 .only-print { display: none; }
 .avoid-break { break-inside: avoid; page-break-inside: avoid; }
-.os-document-header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
-.os-document-number { font-size:22px; font-weight:800; color:#122b53; white-space:nowrap; }
+.os-document-header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
 .os-brand { display:flex; align-items:center; gap:16px; min-width:0; }
 .os-brand-logo { width:165px; max-height:105px; object-fit:contain; flex-shrink:0; }
 .os-brand-details { color:#526074; font-size:12px; line-height:1.65; }
 .os-brand-name { font-size:16px; font-weight:800; color:#122b53; letter-spacing:.3px; }
+.os-document-meta { text-align:right; flex-shrink:0; }
+.os-document-label { font-size:11px; font-weight:700; color:#526074; letter-spacing:1px; }
+.os-document-number { font-size:25px; font-weight:800; color:#122b53; }
+.os-document-status { display:inline-block; padding:3px 9px; background:#e4ebf5; border-radius:20px; color:#233c61; font-size:11px; font-weight:600; }
 .os-document-dates { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; border:1px solid #dce6f2; border-top:0; border-radius:0 0 10px 10px; padding:10px 18px; margin-bottom:20px; font-size:12px; color:#526074; }
-@media screen and (max-width:700px) { .os-brand { flex-wrap:wrap; justify-content:center; } .os-brand-logo { width:110px; } }
+@media (max-width:700px) { .os-document-header { flex-wrap:wrap; } .os-brand-logo { width:110px; } .os-document-meta { text-align:left; } }
 @media print {
-  /* Cabeçalhos/rodapés automáticos devem ser desativados no diálogo do navegador. */
-  @page { size:A4; margin:12mm; }
+  @page { size:A4; margin:8mm; }
   body * { visibility:hidden !important; }
   #print-scope, #print-scope * { visibility:visible !important; }
   #print-scope { position:static !important; width:auto !important; margin:0 !important; padding:0 !important; }
-  header, footer, nav, .navbar, .topbar, .app-header, .app-navbar, .sidebar, .app-sidebar, .offcanvas,
+  header, footer, nav, .navbar, .topbar, .app-header, .app-navbar, .sidebar, .offcanvas,
   .breadcrumb, .pagination, .btn, .btn-group, .dropdown, .no-print, .card-header { display:none !important; }
   body { background:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  .app-wrapper { display:block !important; }
+  /* Remove o espaço do painel e usa somente as margens A4 definidas acima. */
+  .app-wrapper, body > .d-flex { display:block !important; }
+  /* Elementos ocultos fora da nota não devem reservar altura no papel. */
+  body *:not(:has(#print-scope)):not(#print-scope):not(#print-scope *) { display:none !important; }
   .app-main { margin:0 !important; padding:0 !important; min-height:0 !important; }
   .container { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; }
+  .card { display:block !important; border:0 !important; }
   .card-body { padding:0 !important; }
+  #print-scope { font-size:9pt; line-height:1.15; }
+  /* O breakpoint de tela não deve empilhar os blocos na folha A4. */
+  #print-scope .row.g-3 { display:table !important; table-layout:fixed; width:100%; margin:0 !important; border-spacing:0; }
+  #print-scope .row.g-3 > .col-md-4,
+  #print-scope .row.g-3 > .col-md-6 { display:table-cell !important; float:none !important; vertical-align:top; padding:0 !important; margin:0 !important; }
+  #print-scope .row.g-3 > .col-md-4 { width:33.333333% !important; }
+  #print-scope .row.g-3 > .col-md-6 { width:50% !important; }
+  #print-scope .h-100 { height:auto !important; min-height:0 !important; }
+  #print-scope .os-totals { display:block !important; margin:0 !important; break-inside:avoid; page-break-inside:avoid; }
+  #print-scope .os-totals > .col-12 { width:100% !important; padding:0 !important; }
+  #print-scope .mb-4, #print-scope .mb-2, #print-scope .mb-1 { margin-bottom:0 !important; }
+  #print-scope .p-3 { padding:4px 6px !important; }
+  #print-scope .my-2 { margin-top:3px !important; margin-bottom:3px !important; }
+  #print-scope .border { border-radius:0 !important; }
+  #print-scope h5 { margin:3px 0 0 !important; font-size:10pt; break-after:avoid; page-break-after:avoid; }
+  #print-scope .fs-5 { font-size:10pt !important; }
+  #print-scope th, #print-scope td { padding:2px 5px !important; font-size:9pt !important; line-height:1.15 !important; }
+  /* As tabelas podem continuar na próxima folha, mantendo cada item inteiro. */
+  #print-scope .table-wrap, #print-scope table, #print-scope tbody { break-inside:auto; page-break-inside:auto; }
+  #print-scope .table { margin-bottom:0 !important; }
   .card, .border, .shadow, .shadow-sm { box-shadow:none !important; }
-  .os-document-header { background:#fff !important; padding:8px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
-  .os-brand-logo { width:145px; max-height:90px; }
-  .os-document-dates { padding:8px 0; border:0; border-radius:0; }
+  .os-document-header { flex-wrap:nowrap; background:#fff !important; padding:2px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
+  .os-brand-logo { width:100px; max-height:60px; }
+  .os-brand { gap:8px; }
+  .os-brand-details { font-size:9px; line-height:1.2; }
+  .os-brand-name { font-size:12px; }
+  .os-document-dates { padding:2px 0; margin-bottom:0; gap:2px 12px; font-size:9px; border:0; border-radius:0; }
+  .os-document-number { font-size:18px; }
+  .os-document-label, .os-document-status { font-size:9px; }
+  .os-document-status { padding:1px 5px; }
   .table-wrap, .table-responsive { overflow:visible !important; max-height:none !important; height:auto !important; }
   #print-scope table { display:table !important; width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
   #print-scope thead { display:table-header-group !important; }
