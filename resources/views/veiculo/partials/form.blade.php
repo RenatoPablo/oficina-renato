@@ -9,8 +9,7 @@
                        name="tipo" 
                        id="tipo" 
                        class="form-control"
-                       value="{{ old('tipo') }}"
-                       placeholder="Carro">
+                       value="{{ old('tipo', 'Carro') }}">
             </div>
         </div>
 
