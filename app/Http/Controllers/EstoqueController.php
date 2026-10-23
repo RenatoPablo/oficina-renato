@@ -25,7 +25,7 @@ class EstoqueController extends Controller
             'descricao' => 'required|string|max:255',
             'quantidade' => 'required|numeric|min:0',
             'preco_rs' => 'required|min:0',
-            'medida' => 'nullable|string|max:10',
+            'medida' => 'nullable|string|max:50',
         ];
     }
 
