@@ -93,7 +93,13 @@
 
          ========================================================= --}}
 
-      <div id="print-scope">
+      @php
+        $quantidadeLinhas = $os->servicosItens->count() + $os->pecasItens->count();
+        $densidadeImpressao = $quantidadeLinhas <= 8 ? 'spacious' : ($quantidadeLinhas <= 18 ? 'regular' : 'compact');
+      @endphp
+      <div id="print-scope" class="os-print-{{ $densidadeImpressao }}">
+        <div class="os-print-original">
+        <div class="os-document-intro">
 
 
 
@@ -128,7 +134,7 @@
 
         {{-- Blocos: Cliente / Veículo / Dados --}}
 
-        <div class="row g-3 mb-4">
+        <div class="row g-3 mb-4 os-identification">
 
           <div class="col-md-4">
 
@@ -235,6 +241,8 @@
         </div>
 
 
+
+        </div>{{-- /.os-document-intro --}}
 
         {{-- Serviços --}}
 
@@ -418,6 +426,7 @@
 
 
 
+        </div>{{-- /.os-print-original --}}
       </div>{{-- /#print-scope --}}
 
 
@@ -428,13 +437,14 @@
 
 </div>
 
+<script src="{{ asset('assets/js/os/os-print.js') }}?v={{ filemtime(public_path('assets/js/os/os-print.js')) }}" defer></script>
 @endsection
 
 
 
 @push('styles')
 <style>
-.only-print { display: none; }
+.only-print, .os-print-pages { display: none; }
 .avoid-break { break-inside: avoid; page-break-inside: avoid; }
 .os-document-header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 18px; background:#f7faff; border:1px solid #dce6f2; border-radius:10px 10px 0 0; }
 .os-brand { display:flex; align-items:center; gap:16px; min-width:0; }
@@ -448,7 +458,15 @@
 .os-document-dates { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; border:1px solid #dce6f2; border-top:0; border-radius:0 0 10px 10px; padding:10px 18px; margin-bottom:20px; font-size:12px; color:#526074; }
 @media (max-width:700px) { .os-document-header { flex-wrap:wrap; } .os-brand-logo { width:110px; } .os-document-meta { text-align:left; } }
 @media print {
-  @page { size:A4; margin:8mm; }
+  @page { size:A4; margin:10mm; }
+  #print-scope.os-paginated { width:190mm !important; max-width:100% !important; }
+  #print-scope.os-paginated > .os-print-original { display:none !important; }
+  #print-scope.os-paginated > .os-print-pages { display:block !important; }
+  #print-scope .os-print-page { display:flex; flex-direction:column; min-height:276mm; box-sizing:border-box; break-after:page; page-break-after:always; }
+  #print-scope .os-print-page:last-child { break-after:auto; page-break-after:auto; }
+  #print-scope .os-print-page-content { display:flow-root; flex:0 0 auto; }
+  #print-scope .os-print-page > .os-totals { margin-top:auto !important; padding-top:4mm; }
+
   body * { visibility:hidden !important; }
   #print-scope, #print-scope * { visibility:visible !important; }
   #print-scope { position:static !important; width:auto !important; margin:0 !important; padding:0 !important; }
@@ -463,9 +481,16 @@
   .container { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; }
   .card { display:block !important; border:0 !important; }
   .card-body { padding:0 !important; }
-  #print-scope { font-size:9pt; line-height:1.15; }
+  #print-scope { font-size:11.5pt; line-height:1.35; --os-cell-padding:8px; }
+  #print-scope.os-print-spacious { --os-cell-padding:14px; }
+  #print-scope.os-print-compact { --os-cell-padding:5px; }
+  /* Cerca de um terço da área útil A4, podendo crescer com textos longos. */
+  #print-scope .os-document-intro { min-height:88mm; }
+  #print-scope .os-document-intro > .row.g-3 .border { min-height:21mm !important; }
+  #print-scope .os-document-intro > .os-identification .border { min-height:24mm !important; }
+  #print-scope .os-document-intro > .os-identification { margin-bottom:4mm !important; }
   /* O breakpoint de tela não deve empilhar os blocos na folha A4. */
-  #print-scope .row.g-3 { display:table !important; table-layout:fixed; width:100%; margin:0 !important; border-spacing:0; }
+  #print-scope .row.g-3 { display:table !important; table-layout:fixed; width:100%; margin:0 0 3mm !important; border-spacing:3px 0; }
   #print-scope .row.g-3 > .col-md-4,
   #print-scope .row.g-3 > .col-md-6 { display:table-cell !important; float:none !important; vertical-align:top; padding:0 !important; margin:0 !important; }
   #print-scope .row.g-3 > .col-md-4 { width:33.333333% !important; }
@@ -473,32 +498,36 @@
   #print-scope .h-100 { height:auto !important; min-height:0 !important; }
   #print-scope .os-totals { display:block !important; margin:0 !important; break-inside:avoid; page-break-inside:avoid; }
   #print-scope .os-totals > .col-12 { width:100% !important; padding:0 !important; }
-  #print-scope .mb-4, #print-scope .mb-2, #print-scope .mb-1 { margin-bottom:0 !important; }
-  #print-scope .p-3 { padding:4px 6px !important; }
-  #print-scope .my-2 { margin-top:3px !important; margin-bottom:3px !important; }
+  #print-scope .mb-4 { margin-bottom:5mm !important; }
+  #print-scope .mb-2 { margin-bottom:5px !important; }
+  #print-scope .mb-1 { margin-bottom:3px !important; }
+  #print-scope .p-3 { padding:9px 10px !important; }
+  #print-scope .my-2 { margin-top:6px !important; margin-bottom:6px !important; }
   #print-scope .border { border-radius:0 !important; }
-  #print-scope h5 { margin:3px 0 0 !important; font-size:10pt; break-after:avoid; page-break-after:avoid; }
-  #print-scope .fs-5 { font-size:10pt !important; }
-  #print-scope th, #print-scope td { padding:2px 5px !important; font-size:9pt !important; line-height:1.15 !important; }
+  #print-scope h5 { margin:3mm 0 2mm !important; font-size:13pt; break-after:avoid; page-break-after:avoid; }
+  #print-scope .fs-5 { font-size:14pt !important; }
+  #print-scope th, #print-scope td { padding:var(--os-cell-padding) 9px !important; font-size:10.5pt !important; line-height:1.35 !important; }
+  #print-scope thead th { padding:7px 9px !important; }
+  #print-scope .os-totals > .col-12 > .border { padding:12px !important; }
   /* As tabelas podem continuar na próxima folha, mantendo cada item inteiro. */
   #print-scope .table-wrap, #print-scope table, #print-scope tbody { break-inside:auto; page-break-inside:auto; }
   #print-scope .table { margin-bottom:0 !important; }
   .card, .border, .shadow, .shadow-sm { box-shadow:none !important; }
-  .os-document-header { flex-wrap:nowrap; background:#fff !important; padding:2px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
-  .os-brand-logo { width:100px; max-height:60px; }
-  .os-brand { gap:8px; }
-  .os-brand-details { font-size:9px; line-height:1.2; }
-  .os-brand-name { font-size:12px; }
-  .os-document-dates { padding:2px 0; margin-bottom:0; gap:2px 12px; font-size:9px; border:0; border-radius:0; }
-  .os-document-number { font-size:18px; }
-  .os-document-label, .os-document-status { font-size:9px; }
+  .os-document-header { flex-wrap:nowrap; background:#fff !important; min-height:27mm; padding:6px 0; border:0; border-bottom:2px solid #122b53; border-radius:0; }
+  .os-brand-logo { width:145px; max-height:85px; }
+  .os-brand { gap:14px; }
+  .os-brand-details { font-size:9.25pt; line-height:1.5; }
+  .os-brand-name { font-size:13pt; }
+  .os-document-dates { padding:8px 0; margin-bottom:3mm; gap:4px 12px; font-size:8.5pt; border:0; border-radius:0; }
+  .os-document-number { font-size:19pt; }
+  .os-document-label, .os-document-status { font-size:9.25pt; }
   .os-document-status { padding:1px 5px; }
   .table-wrap, .table-responsive { overflow:visible !important; max-height:none !important; height:auto !important; }
-  #print-scope table { display:table !important; width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
+  #print-scope table { display:table !important; width:100% !important; min-width:0 !important; table-layout:fixed !important; border-collapse:collapse !important; }
   #print-scope thead { display:table-header-group !important; }
   #print-scope tbody { display:table-row-group !important; }
   #print-scope tr { display:table-row !important; break-inside:avoid !important; }
-  #print-scope td, #print-scope th { display:table-cell !important; white-space:normal !important; }
+  #print-scope td, #print-scope th { display:table-cell !important; width:auto !important; white-space:normal !important; }
   .avoid-break { break-inside:avoid !important; page-break-inside:avoid !important; }
 }
 </style>
