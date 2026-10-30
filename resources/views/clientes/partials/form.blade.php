@@ -38,7 +38,7 @@
 
         <!-- CNPJ/CPF -->
         <div class="col-md-4">
-            <label for="cnpj_cpf" class="form-label">CNPJ/CPF</label>
+            <label for="cnpj_cpf" class="form-label">CNPJ/CPF (opcional)</label>
             <input type="text"
                    name="cnpj_cpf"
                    id="cnpj_cpf"

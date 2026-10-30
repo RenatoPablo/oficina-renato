@@ -15,6 +15,11 @@ class Cliente extends TenantModel
         'telefone','celular','email','observacao','user_id'
     ];
 
+    public function setCnpjCpfAttribute($value): void
+    {
+        $this->attributes['cnpj_cpf'] = $value === null || trim((string) $value) === '' ? null : $value;
+    }
+
     // histórico de vínculos (se usar na UI)
     public function veiculosVinculos()
     {

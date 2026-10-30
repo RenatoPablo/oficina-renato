@@ -72,6 +72,7 @@ class ClienteController extends Controller
 
     public function createSubmit(Request $request)
     {
+        $this->normalizarDocumento($request);
         // validate request
         $request->validate(
             $this->getValidaInputRules(),
@@ -134,14 +135,9 @@ class ClienteController extends Controller
 
     public function editSubmit(Request $request) 
     {
+        $this->normalizarDocumento($request);
         // validate request
         $rules = $this->getValidaInputRules($request->id);
-        $rules['cnpj_cpf'] = [
-            'nullable',
-            'string',
-            'max:20',
-            Rule::unique('clientes')->ignore($request->id),
-        ];
 
         $request->validate($rules, $this->validaInputMessages);
 
@@ -165,6 +161,13 @@ class ClienteController extends Controller
         $cliente->save();
 
         return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+    }
+
+    private function normalizarDocumento(Request $request): void
+    {
+        if (is_string($request->input('cnpj_cpf')) && trim($request->input('cnpj_cpf')) === '') {
+            $request->merge(['cnpj_cpf' => null]);
+        }
     }
 
     public function destroy($encryptedId)
