@@ -19,7 +19,7 @@ class VeiculoController extends Controller
             'marca'  => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
             'placa'  => [
-                'required',
+                'nullable', 'string', 'max:255',
                 Rule::unique('veiculos', 'placa')
                     ->where(fn($q) => $q->where('user_id', Auth::id()))
                     ->ignore($veiculoId),
@@ -36,7 +36,6 @@ class VeiculoController extends Controller
         'marca.max'       => 'A marca não pode conter mais do que :max caracteres.',
         'modelo.required' => 'O modelo deve ser preenchido.',
         'modelo.max'      => 'O modelo não pode conter mais do que :max caracteres.',
-        'placa.required'  => 'A placa deve ser preenchida.',
         'placa.regex'     => 'A placa deve estar no formato AAA-1234 ou AAA1A23.',
         'km.numeric'      => 'O KM deve conter somente números.',
         'ano.numeric'     => 'O ano deve conter somente números.',
@@ -100,6 +99,7 @@ class VeiculoController extends Controller
 
     public function createSubmit(Request $request)
     {
+        $this->normalizarPlaca($request);
         $request->validate($this->validaInputRules(), $this->validaInputMessages);
 
         $veiculo = Veiculo::create([
@@ -146,6 +146,7 @@ class VeiculoController extends Controller
 
     public function editSubmit(Request $request)
     {
+        $this->normalizarPlaca($request);
         $request->validate($this->validaInputRules($request->id), $this->validaInputMessages);
 
         $veiculo = Veiculo::findOrFail($request->id); // escopo garante dono
@@ -196,6 +197,12 @@ class VeiculoController extends Controller
         }
 
         return redirect()->route('veiculo.index')->with('success', 'Veículo atualizado com sucesso.');
+    }
+
+    private function normalizarPlaca(Request $request): void
+    {
+        $veiculo = new Veiculo(['placa' => $request->input('placa')]);
+        $request->merge(['placa' => $veiculo->placa]);
     }
 
     public function desassociarCliente($encryptedId)

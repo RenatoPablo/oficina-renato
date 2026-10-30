@@ -50,6 +50,10 @@ class Veiculo extends TenantModel
     public function setPlacaAttribute($value): void
     {
         $val = strtoupper(trim((string) $value));
+        if ($val === '') {
+            $this->attributes['placa'] = null;
+            return;
+        }
 
         // formata ABC1234 -> ABC-1234
         if (preg_match('/^[A-Z]{3}\d{4}$/', $val)) {

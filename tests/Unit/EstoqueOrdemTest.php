@@ -29,6 +29,8 @@ class EstoqueOrdemTest extends TestCase
                 $t->unsignedBigInteger('user_id')->default(7);
                 $t->unsignedBigInteger('ordem_servico_id')->nullable();
                 $t->unsignedBigInteger('estoque_id')->nullable();
+                $t->unsignedBigInteger('servico_id')->nullable();
+                $t->string('tecnico')->nullable();
                 $t->unsignedBigInteger('veiculo_id')->nullable();
                 $t->string('situacao')->default('Aberta');
                 foreach (['quantidade', 'qtd', 'qtd_descontada', 'valor_unit', 'valor_total', 'frete', 'total_os', 'total_pecas', 'total_servicos'] as $col) {
@@ -49,6 +51,37 @@ class EstoqueOrdemTest extends TestCase
     private function sincronizar(OrdemServico $os, array $linhas): void
     {
         app(EstoqueOrdemService::class)->sincronizar($os, $linhas);
+    }
+
+    public function test_total_digitado_calcula_unitario_e_preserva_centavos_ao_salvar_novamente(): void
+    {
+        $os = OrdemServico::create(['situacao' => 'Aberta']);
+        $estoque = Estoque::create(['quantidade' => 10]);
+        $controller = app(OrdemServicoController::class);
+        $payload = [
+            'frete' => 7,
+            'servicos' => [['servico_id' => 1, 'qtd' => 3, 'valor_unit' => 0, 'valor_total' => 100]],
+            'pecas' => [['estoque_id' => $estoque->id, 'qtd' => 3, 'valor_unit' => 0, 'valor_total' => 100]],
+        ];
+        $controller->syncAll(SyncAllRequest::create('/', 'POST', $payload), $os->id);
+        $this->assertEquals(207, $os->fresh()->total_os);
+        foreach ([$os->servicosItens()->first(), $os->pecasItens()->first()] as $item) {
+            $this->assertEquals(100, $item->valor_total);
+            $this->assertEquals(33.33333, $item->valor_unit);
+        }
+        $payload['servicos'] = $os->servicosItens()->get()->toArray();
+        $payload['pecas'] = $os->pecasItens()->get()->toArray();
+        $controller->syncAll(SyncAllRequest::create('/', 'POST', $payload), $os->id);
+        $this->assertEquals(207, $os->fresh()->total_os);
+        $this->assertEquals(7, $estoque->fresh()->quantidade);
+
+        $payload['servicos'][0]['qtd'] = 4;
+        $payload['pecas'][0]['qtd'] = 4;
+        $controller->syncAll(SyncAllRequest::create('/', 'POST', $payload), $os->id);
+        $this->assertEquals(25, $os->servicosItens()->first()->valor_unit);
+        $this->assertEquals(25, $os->pecasItens()->first()->valor_unit);
+        $this->assertEquals(207, $os->fresh()->total_os);
+        $this->assertEquals(6, $estoque->fresh()->quantidade);
     }
 
     private function linha(int $estoque, float $qtd, ?int $id = null): array

@@ -51,12 +51,12 @@
 
               <td>
                 <input name="servicos[{{ $i }}][valor_unit]" type="text" class="form-control money" inputmode="decimal"
-                  value="{{ number_format((float)$item->valor_unit, 2, ',', '') }}">
+                  value="{{ number_format((float)$item->valor_unit, (float)$item->valor_unit == round((float)$item->valor_unit, 2) ? 2 : 5, ',', '') }}">
               </td>
 
               <td>
                 <input name="servicos[{{ $i }}][valor_total]" type="text" class="form-control money" inputmode="decimal"
-                  value="{{ number_format((float)$item->valor_total, 2, ',', '') }}" readonly>
+                  value="{{ number_format((float)$item->valor_total, 2, ',', '') }}">
               </td>
 
               <td class="text-end">
@@ -136,12 +136,12 @@
 
               <td>
                 <input name="pecas[{{ $j }}][valor_unit]" type="text" class="form-control money" inputmode="decimal"
-                  value="{{ number_format((float)$item->valor_unit, 2, ',', '') }}">
+                  value="{{ number_format((float)$item->valor_unit, (float)$item->valor_unit == round((float)$item->valor_unit, 2) ? 2 : 5, ',', '') }}">
               </td>
 
               <td>
                 <input name="pecas[{{ $j }}][valor_total]" type="text" class="form-control money" inputmode="decimal"
-                  value="{{ number_format((float)$item->valor_total, 2, ',', '') }}" readonly>
+                  value="{{ number_format((float)$item->valor_total, 2, ',', '') }}">
               </td>
 
               <td class="text-end">

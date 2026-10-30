@@ -56,7 +56,7 @@ class EstoqueOrdemService
                 $estoque->quantidade = max(0, (float) $estoque->quantidade - $descontar);
                 $dados = collect($linha)->only(['estoque_id', 'qtd', 'valor_unit', 'codigo_cor'])->all();
                 $dados['qtd_descontada'] = $manter + $descontar;
-                $dados['valor_total'] = round((float) $linha['qtd'] * (float) $linha['valor_unit'], 2);
+                $dados = array_replace($dados, ValoresItemOrdem::calcular($linha));
                 $dados['ordem_servico_id'] = $os->id;
                 $antigo ? $antigo->update($dados) : PecaOrdem::create($dados);
             }

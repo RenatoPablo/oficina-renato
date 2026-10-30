@@ -39,7 +39,7 @@
 
         {{-- Placa --}}
         <div class="col-md-6">
-            <label for="placa" class="form-label">Placa do Veículo</label>
+            <label for="placa" class="form-label">Placa do Veículo (opcional)</label>
             <input type="text" 
                 class="form-control text-uppercase"
                 name="placa"

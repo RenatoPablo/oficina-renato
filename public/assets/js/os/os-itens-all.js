@@ -1,7 +1,7 @@
 // public/assets/js/os-itens-all.js
 (() => {
   // ===== helpers =====
-  const $  = (s, r = document) => r.querySelector(s);
+  const $  = (s, r = document) => r?.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
   const avisoEstoque = $('#aviso-estoque');
@@ -41,7 +41,7 @@
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(n);
 
   // ===== cálculo de linha / totais =====
-  function recalcRow(tr) {
+  function recalcRow(tr, basis = tr.dataset.priceBasis || 'unit') {
     const qtdEl   = $('input[name$="[qtd]"]', tr);
     const unitEl  = $('input[name$="[valor_unit]"]', tr);
     const totalEl = $('input[name$="[valor_total]"]', tr);
@@ -51,10 +51,13 @@
     if (totalEl.type === 'number') totalEl.type = 'text';
 
     const qtd  = toNumber(qtdEl.value);
-    const unit = toNumber(unitEl.value);
-    const tot  = qtd * unit;
-
-    totalEl.value = fmtBR(tot, 2); // exibe com vírgula, 2 casas
+    if (basis === 'total') {
+      unitEl.value = new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 2, maximumFractionDigits: 5,
+      }).format(qtd > 0 ? toNumber(totalEl.value) / qtd : 0);
+    } else {
+      totalEl.value = fmtBR(qtd * toNumber(unitEl.value), 2);
+    }
   }
 
   function calcSubtotals() {
@@ -106,7 +109,7 @@
       </td>
       <td><input name="servicos[${idx}][qtd]" type="number" step="1" class="form-control" value="1"></td>
       <td><input name="servicos[${idx}][valor_unit]" type="text" class="form-control money" inputmode="decimal" value="0,00"></td>
-      <td><input name="servicos[${idx}][valor_total]" type="text" class="form-control money" inputmode="decimal" value="0,00" readonly></td>
+      <td><input name="servicos[${idx}][valor_total]" type="text" class="form-control money" inputmode="decimal" value="0,00"></td>
       <td class="text-end">
         <button type="button" class="btn btn-outline-danger btn-sm btn-remove-line">Remover</button>
       </td>`;
@@ -123,17 +126,17 @@
       </td>
       <td><input name="pecas[${idx}][qtd]" type="number" step="1" class="form-control" value="1"></td>
       <td><input name="pecas[${idx}][valor_unit]" type="text" class="form-control money" inputmode="decimal" value="0,00"></td>
-      <td><input name="pecas[${idx}][valor_total]" type="text" class="form-control money" inputmode="decimal" value="0,00" readonly></td>
+      <td><input name="pecas[${idx}][valor_total]" type="text" class="form-control money" inputmode="decimal" value="0,00"></td>
       <td class="text-end">
         <button type="button" class="btn btn-outline-danger btn-sm btn-remove-line">Remover</button>
       </td>`;
     return tr;
   }
 
-  // ===== máscara em tempo real (SOMENTE valor_unit) =====
+  // ===== edição de preço unitário ou total da linha =====
   document.addEventListener('input', (e) => {
     const el = e.target;
-    if (!el.name || !el.name.endsWith('[valor_unit]')) return;
+    if (!el.closest('#form-sync-all') || !/\[(valor_unit|valor_total)\]$/.test(el.name)) return;
 
     // só dígitos
     let raw = el.value.replace(/\D/g, '');
@@ -146,7 +149,10 @@
     }
 
     const tr = el.closest('tr');
-    if (tr) recalcRow(tr);
+    if (tr) {
+      tr.dataset.priceBasis = el.name.endsWith('[valor_total]') ? 'total' : 'unit';
+      recalcRow(tr);
+    }
     calcSubtotals();
   });
 
@@ -165,6 +171,7 @@
       const tr     = sel.closest('tr');
       const unitEl = $('input[name$="[valor_unit]"]', tr);
       if (unitEl) {
+        tr.dataset.priceBasis = 'unit';
         // aplica com vírgula
         unitEl.value = fmtBR(toNumber(preco), 2).replace(/\./g, '').replace(',', ','); // garante 2 casas
         recalcRow(tr);
@@ -273,7 +280,7 @@
   wireBehaviors(document);
 
   // primeira passada: alinhar linhas que vieram do servidor
-  $$('#tbl-servicos tbody tr, #tbl-pecas tbody tr').forEach(recalcRow);
+  // Preserva os totais salvos, inclusive quando a divisão gera frações de centavo.
   calcSubtotals();
 
   // frete recalcula total
@@ -282,12 +289,12 @@
   // normalização antes de enviar (backend recebe com ponto)
   document.addEventListener('submit', (e) => {
     const form = e.target;
-    if (!(form instanceof HTMLFormElement)) return;
+    if (!(form instanceof HTMLFormElement) || form.id !== 'form-sync-all') return;
 
     form.querySelectorAll('input.money').forEach((el) => {
       const isUnit = /\[valor_unit\]$/.test(el.name);
       const n = toNumber(el.value);
-      const dec = isUnit ? 2 : 2; // unitário: 2 casas (se quiser 5 pra peça, mude aqui)
+      const dec = isUnit ? 5 : 2;
       el.value = n.toFixed(dec);
     });
   }, true);

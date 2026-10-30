@@ -10,6 +10,7 @@ use App\Models\Servico;
 use App\Models\ServicoOrdem;
 use App\Models\Veiculo;
 use App\Services\EstoqueOrdemService;
+use App\Services\ValoresItemOrdem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -171,15 +172,14 @@ class OrdemServicoController extends Controller
                         continue;
                     }
                     $q = (float) ($row['qtd'] ?? 1);
-                    $u = (float) ($row['valor_unit'] ?? 0);
-                    $tot = round($q * $u, 2);
+                    $valores = ValoresItemOrdem::calcular($row);
 
                     $data = [
                         'ordem_servico_id' => $os->id,
                         'servico_id' => (int) $row['servico_id'],
                         'qtd' => $q,
-                        'valor_unit' => $u,
-                        'valor_total' => $tot,
+                        'valor_unit' => $valores['valor_unit'],
+                        'valor_total' => $valores['valor_total'],
                         'tecnico' => $row['tecnico'] ?? null,
                         'codigo_cor' => $row['codigo_cor'] ?? null,
                     ];

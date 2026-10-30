@@ -3,7 +3,7 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/masks.js') }}"></script>
     <script src="{{ asset('assets/js/maskPlaca.js') }}"></script>
-    <script src="{{ asset('assets/js/os/os-itens-all.js') }}"></script>
+    <script src="{{ asset('assets/js/os/os-itens-all.js') }}?v={{ filemtime(public_path('assets/js/os/os-itens-all.js')) }}"></script>
     <script src="{{ asset('assets/js/input_valor.js') }}"></script>
 
     <script>
