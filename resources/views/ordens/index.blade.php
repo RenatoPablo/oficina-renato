@@ -62,6 +62,7 @@
               <th class="text-nowrap">Nº</th>
               <th class="text-nowrap">Aberta em</th>
               <th>Veículo</th>
+              <th>Cor</th>
               <th>Cliente</th>
               <th class="text-end text-nowrap">Serviços</th>
               <th class="text-end text-nowrap">Peças</th>
@@ -85,6 +86,7 @@
                   <div class="small text-muted">{{ $os->veiculo->marca ?? '' }} {{ $os->veiculo->modelo ?? '' }}</div>
                   <strong class="text-uppercase">{{ $os->veiculo->placa ?? '—' }}</strong>
                 </td>
+                <td>{{ $os->veiculo?->cor ?: '—' }}</td>
 
                 <td class="text-truncate" style="max-width:260px;">{{ $clienteNome }}</td>
 
@@ -114,7 +116,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="10" class="text-center text-muted py-4">
+                <td colspan="11" class="text-center text-muted py-4">
                   <i class="bi bi-clipboard-x fs-5 d-block mb-1"></i>
                   Nenhuma OS encontrada.
                 </td>

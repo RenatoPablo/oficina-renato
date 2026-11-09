@@ -13,15 +13,6 @@
             </div>
         </div>
 
-        {{-- marca --}}
-        <div class="col-md-6">
-            <label for="marca" class="form-label">Marca do Veiculo</label>
-            <input type="text" class="form-control"
-                   name="marca"
-                   id="marca"
-                   value="{{ old('marca') }}">
-        </div>
-
         {{-- modelo --}}
         <div class="col-md-6">
             <label for="modelo" class="form-label">Modelo do Veiculo</label>
@@ -30,6 +21,24 @@
                    name="modelo"
                    id="modelo"
                    value="{{ old('modelo') }}">
+        </div>
+
+        {{-- cor --}}
+        <div class="col-md-6">
+            <label for="cor" class="form-label">Cor do Veículo (opcional)</label>
+            <input type="text" class="form-control"
+                   name="cor"
+                   id="cor"
+                   value="{{ old('cor') }}">
+        </div>
+
+        {{-- marca --}}
+        <div class="col-md-6">
+            <label for="marca" class="form-label">Marca do Veículo (opcional)</label>
+            <input type="text" class="form-control"
+                   name="marca"
+                   id="marca"
+                   value="{{ old('marca') }}">
         </div>
 
         {{-- Placa --}}

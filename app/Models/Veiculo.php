@@ -10,7 +10,7 @@ class Veiculo extends TenantModel
 {
     use SoftDeletes, BelongsToUser;
 
-    protected $fillable = ['tipo', 'marca', 'modelo', 'placa', 'km', 'ano', 'user_id'];
+    protected $fillable = ['tipo', 'marca', 'modelo', 'cor', 'placa', 'km', 'ano', 'user_id'];
 
     // Se quiser que proprietario_nome apareça quando serializar pra JSON:
     // protected $appends = ['proprietario_nome'];

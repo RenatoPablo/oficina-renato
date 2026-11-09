@@ -62,7 +62,7 @@
                   <input type="text"
                          id="veiculo_input_id" 
                          class="form-control text-end"
-                         value="{{ $os->veiculo->marca }} - {{ $os->veiculo->modelo }} - {{$os->veiculo->placa}}"
+                         value="{{ $os->veiculo->modelo }} — {{ $os->veiculo->placa ?: 'Sem placa' }} — {{ $os->veiculo->cor ?: 'Cor não informada' }}"
                          readonly>
                   <label for="veiculo_input_id" class="fw-semibold">Veiculo</label>
                 </div>
@@ -82,7 +82,7 @@
                     @foreach($veiculos as $veiculo)
                       <option value="{{ $veiculo->id }}"
                         @selected(old('veiculo_id', $os->veiculo_id) == $veiculo->id)>
-                        {{ $veiculo->marca }} - {{ $veiculo->modelo }} ({{ $veiculo->placa }})
+                        {{ $veiculo->modelo }} — {{ $veiculo->placa ?: 'Sem placa' }} — {{ $veiculo->cor ?: 'Cor não informada' }}
                       </option>
                     @endforeach
                   </select>

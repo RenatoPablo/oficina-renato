@@ -58,6 +58,7 @@
                                 <th>Tipo</th>
                                 <th>Marca</th>
                                 <th>Modelo</th>
+                                <th>Cor</th>
                                 <th>Placa</th>
                                 <th>KM</th>
                                 <th>Ano</th>
@@ -71,6 +72,7 @@
                                     <td>{{ $veiculo->tipo }}</td>
                                     <td>{{ $veiculo->marca }}</td>
                                     <td>{{ $veiculo->modelo }}</td>
+                                    <td>{{ $veiculo->cor ?: '—' }}</td>
                                     <td class="text-uppercase">{{ $veiculo->placa }}</td>
                                     <td>{{ $veiculo->km }}</td>
                                     <td>{{ $veiculo->ano }}</td>
@@ -97,7 +99,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted">Nenhum veículo cadastrado.</td>
+                                    <td colspan="9" class="text-center text-muted">Nenhum veículo cadastrado.</td>
                                 </tr>
                             @endforelse
                         </tbody>

@@ -16,7 +16,8 @@ class VeiculoController extends Controller
     {
         return [
             'tipo'   => 'required|string|max:255',
-            'marca'  => 'required|string|max:255',
+            'marca'  => 'nullable|string|max:255',
+            'cor'    => 'nullable|string|max:255',
             'modelo' => 'required|string|max:255',
             'placa'  => [
                 'nullable', 'string', 'max:255',
@@ -32,7 +33,7 @@ class VeiculoController extends Controller
     private $validaInputMessages = [
         'tipo.required'   => 'O tipo deve ser preenchido.',
         'tipo.max'        => 'O tipo não deve conter mais do que :max caracteres.',
-        'marca.required'  => 'A marca deve ser preenchida.',
+        'cor.max'         => 'A cor não pode conter mais do que :max caracteres.',
         'marca.max'       => 'A marca não pode conter mais do que :max caracteres.',
         'modelo.required' => 'O modelo deve ser preenchido.',
         'modelo.max'      => 'O modelo não pode conter mais do que :max caracteres.',
@@ -91,6 +92,7 @@ class VeiculoController extends Controller
         $veiculo->tipo   = $request->tipo;
         $veiculo->marca  = $request->marca;
         $veiculo->modelo = $request->modelo;
+        $veiculo->cor    = $request->cor;
         $veiculo->placa  = $request->placa;
         $veiculo->km     = $request->km;
         $veiculo->ano    = $request->ano;
@@ -106,6 +108,7 @@ class VeiculoController extends Controller
             'tipo'   => $request->tipo,
             'marca'  => $request->marca,
             'modelo' => $request->modelo,
+            'cor'    => $request->cor,
             'placa'  => $request->placa,
             'km'     => $request->km,
             'ano'    => $request->ano,
@@ -154,6 +157,7 @@ class VeiculoController extends Controller
             'tipo'   => $request->tipo,
             'marca'  => $request->marca,
             'modelo' => $request->modelo,
+            'cor'    => $request->cor,
             'placa'  => $request->placa,
             'km'     => $request->km,
             'ano'    => $request->ano,

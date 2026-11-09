@@ -174,15 +174,16 @@
 
               <div class="fw-semibold mb-2"><i class="bi bi-car-front"></i> Veículo</div>
 
-              <div class="text-uppercase fw-semibold">{{ $os->veiculo->placa ?? '—' }}</div>
-
-              <div class="text-muted small">
+              <div class="text-dark small fw-bold">
 
                 {{ $os->veiculo->marca ?? '' }} {{ $os->veiculo->modelo ?? '' }}
 
                 @if(!empty($os->veiculo?->ano)) · {{ $os->veiculo->ano }} @endif
 
               </div>
+
+              <div class="text-uppercase fw-semibold">{{ $os->veiculo->placa ?? '—' }}</div>
+              <div class="small"><strong>Cor:</strong> {{ $os->veiculo?->cor ?: 'Não informada' }}</div>
 
             </div>
 

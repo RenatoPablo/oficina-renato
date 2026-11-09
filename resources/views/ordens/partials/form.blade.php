@@ -11,7 +11,7 @@
       @foreach ($veiculos as $v)
         <option value="{{ $v->id }}"
           @selected(old('veiculo_id', $os->veiculo_id ?? null) == $v->id)>
-          {{ $v->placa }} — {{ $v->marca }} {{ $v->modelo }}
+          {{ $v->modelo }} — {{ $v->placa ?: 'Sem placa' }} — {{ $v->cor ?: 'Cor não informada' }}
         </option>
       @endforeach
     </select>

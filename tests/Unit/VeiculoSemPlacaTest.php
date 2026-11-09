@@ -22,7 +22,8 @@ class VeiculoSemPlacaTest extends TestCase
         Schema::create('veiculos', function (Blueprint $t) {
             $t->id();
             $t->unsignedBigInteger('user_id');
-            foreach (['tipo', 'marca', 'modelo', 'placa'] as $campo) $t->string($campo);
+            $t->string('marca')->nullable();
+            foreach (['tipo', 'modelo', 'placa'] as $campo) $t->string($campo);
             $t->string('km')->nullable();
             $t->string('ano')->nullable();
             $t->timestamps();
@@ -31,6 +32,8 @@ class VeiculoSemPlacaTest extends TestCase
         });
         $migration = require database_path('migrations/2026_10_30_120000_permitir_veiculo_sem_placa.php');
         $migration->up();
+        $corMigration = require database_path('migrations/2026_11_06_120000_adicionar_cor_aos_veiculos.php');
+        $corMigration->up();
         Schema::create('cliente_veiculo', function (Blueprint $t) {
             $t->id();
             $t->unsignedBigInteger('user_id');
@@ -73,5 +76,30 @@ class VeiculoSemPlacaTest extends TestCase
         Veiculo::create($this->dados(['placa' => 'ABC1234']));
         $this->expectException(ValidationException::class);
         app(VeiculoController::class)->createSubmit(Request::create('/', 'POST', $this->dados(['placa' => 'abc1234'])));
+    }
+
+    public function test_cadastra_sem_marca_e_salva_cor(): void
+    {
+        app(VeiculoController::class)->createSubmit(Request::create('/', 'POST', [
+            'tipo' => 'Carro', 'modelo' => 'Gol', 'cor' => 'Prata',
+        ]));
+
+        $veiculo = Veiculo::firstOrFail();
+        $this->assertNull($veiculo->marca);
+        $this->assertSame('Prata', $veiculo->cor);
+    }
+
+    public function test_edita_cor_e_remove_marca(): void
+    {
+        $veiculo = Veiculo::create($this->dados(['cor' => 'Prata']));
+        DB::table('cliente_veiculo')->insert(['user_id' => 7, 'veiculo_id' => $veiculo->id, 'cliente_id' => 1, 'ativo' => true]);
+
+        app(VeiculoController::class)->editSubmit(Request::create('/', 'PUT', [
+            'id' => $veiculo->id, 'cliente_id' => 1,
+            'tipo' => 'Carro', 'modelo' => 'Gol', 'cor' => 'Preto',
+        ]));
+
+        $this->assertNull($veiculo->fresh()->marca);
+        $this->assertSame('Preto', $veiculo->fresh()->cor);
     }
 }

@@ -20,7 +20,7 @@ class HomeController extends Controller
                 'situacao','total_os','data_chamado','created_at',
             ])
             ->with([
-                'veiculo:id,placa,marca,modelo',
+                'veiculo:id,placa,marca,modelo,cor',
                 'cliente:id,nome,telefone', // só carrega o necessário
             ])
             ->latest('data_chamado')   // ou ->orderByDesc('created_at')

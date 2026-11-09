@@ -84,7 +84,7 @@ class OrdemServicoController extends Controller
 
     public function create()
     {
-        $veiculos = Veiculo::select('id', 'placa', 'marca', 'modelo')
+        $veiculos = Veiculo::select('id', 'placa', 'marca', 'modelo', 'cor')
             ->orderBy('modelo')
             ->get();
 
@@ -125,7 +125,7 @@ class OrdemServicoController extends Controller
     {
         $id = Crypt::decrypt($encryptedId);
 
-        $veiculos = Veiculo::select('id', 'marca', 'placa', 'modelo')->orderBy('modelo')->get();
+        $veiculos = Veiculo::select('id', 'marca', 'placa', 'modelo', 'cor')->orderBy('modelo')->get();
         // carrega cliente também se for exibir na tela
         $os = OrdemServico::with(['veiculo', 'cliente'])->findOrFail($id);
 

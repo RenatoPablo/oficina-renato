@@ -87,6 +87,7 @@
                                         {{ $ordem->veiculo?->marca ?? '—' }}
                                         -
                                         {{ $ordem->veiculo?->placa ?? '—' }}
+                                        <div class="small text-muted">Cor: {{ $ordem->veiculo?->cor ?: 'Não informada' }}</div>
                                     </td>
                                     <td><span class="badge bg-info">{{ $ordem->situacao }}</span></td>
                                     <td class="text-nowrap">{{ \Carbon\Carbon::parse($ordem->data_chamado)->format('d/m/Y H:i') }}</td>
